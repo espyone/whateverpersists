@@ -1,31 +1,20 @@
-
-
-<!DOCTYPE html>
 <html lang="en" >
-
 <head>
-
   <meta charset="UTF-8">
-
-<link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
-<meta name="apple-mobile-web-app-title" content="CodePen">
-
-<link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-<link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
-
-
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=.71, maximum-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-
-
-
 <style>
+.pad {
+  padding-bottom: 19.7px;
+}  .padfoot {
+    padding-bottom: 60px;
+  }
   .spacer {
     position:relative;
     z-index:3;
     top:10px;
-    padding:8.90px;
+    padding:9.90px;
     background-color:purple;
     opacity:1;
     width:97.5%;
@@ -37,7 +26,7 @@
   .spacer3 {
     background-color: #7AC269;
   }
-  .marquee {
+  .marquee, .marquee2, .marquee3 {
     position:fixed;
     top:274px;
     left:-249px;
@@ -45,18 +34,34 @@
     color:#432b72;
     font-size:50px;
     z-index:-6;
-    transform:rotate(90deg);
+    opacity:.8;
+    transform:rotate(90.4deg);
+  }
+  .marquee2 {
+    top:268px;
+    font-size:50.27px;
+    z-index:-7;
+    color:orange;
+    transform:rotate(91.5deg);
+    opacity:1;
+  }
+  .marquee3 {
+    top:269px;
+    z-index:-8;
+    color:yellow;
+    font-size:50.4px;
+    transform:rotate(88.9deg);
   }
   .title {
   width:95%;
-  height:8px;
+  height:4px;
   opacity:1;
   z-index:4;
   font-size:140%;
   font-family: 'Aldrich', sans-serif;
   color:white;
   position:relative;
-  top:12px;
+  top:14px;
   text-align: left;
   text-shadow:1px 1px red;
 }
@@ -69,7 +74,6 @@
 .videoWrapper169 {
   padding-top: 56%;
 }
-
 .videoIframe {
   position: absolute;
   top: 0;
@@ -81,7 +85,6 @@
   background-color: transparent;
 
 }
-
 .videoPoster {
   position: absolute;
   top: 0;
@@ -148,184 +151,180 @@
   -moz-transition-delay: 0s, 800ms;
   transition-delay: 0s, 800ms;
 }
-
 body {
   font-family: avenir, sans-serif;
   background-color:grey;
-
 }
-
 main {
   padding-top:0px;
   max-width: 700px;
   margin: 20px auto;
 }
 </style>
-
   <script>
   window.console = window.console || function(t) {};
 </script>
-
-
-
   <script>
   if (document.location.search.match(/type=embed/gi)) {
     window.parent.postMessage("resize", "*");
   }
 </script>
-
-
 </head>
-
 <body translate="no" >
   <main>
-
   <h1></h1>
   <div class="marquee">WHATEVER PERSISTS</div>
+  <div class="marquee2">WHATEVER PERSISTS</div>
+  <div class="marquee3">WHATEVER PERSISTS</div>
   <div class="title">Bicep - Lido</div><div class="spacer"></div>
    <div class="videoWrapper videoWrapper169 js-videoWrapper">
 
         <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Bicep---Lido/cf9e111584406c19636037d5ba69cb15296428e8/9af7c5"></iframe>
         <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/jUvTokX.jpg)"></button>
       </div>
+      <div class="pad"></div>
       <div class="title">Kool Keith - Bushman</div><div class="spacer spacer2"></div>
       <div class="videoWrapper videoWrapper169 js-videoWrapper">
         <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Kool-Keith---Bushman/1a753ac874d3d3cf8b77a7709a00df5fb6c4f820/e08a1a"></iframe>
         <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/zvFuKP6.jpg)"></button>
-      </div>
+      </div><div class="pad"></div>
       <div class="title">Myd, Mac Demarco - Moving Men</div><div class="spacer"></div>
       <div class="videoWrapper videoWrapper169 js-videoWrapper">
         <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Myd---Moving-Men-(feat.-Mac-DeMarco)/480022fa754f9cc165c697ea4cb454d2a1e47806/6dc62f"></iframe>
         <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/waWOHHw.jpg);background-size:120%;"></button>
-      </div>
+      </div><div class="pad"></div>
       <div class="title">Unknown Mortal Orchestra - That Life</div><div class="spacer spacer2"></div>
       <div class="videoWrapper videoWrapper169 js-videoWrapper">
         <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Unknown-Mortal-Orchestra---That-Life/a20a6de8f259478689af46490ed6fc88b06dc282/7a850b"></iframe>
         <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/WQxd66C.jpg);background-size:120%;"></button>
-      </div>
+      </div><div class="pad"></div>
       <div class="title">Mitchell Leonard - MA1NFRAME</div><div class="spacer spacer3"></div>
       <div class="videoWrapper videoWrapper169 js-videoWrapper">
         <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/MA1NFRAME-(Official-Music-Video)--nGWA3BBI2rc-/d23535d140916eb25a35b0b0021a595921ae819f/e879a1"></iframe>
         <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/c34cb35f8e7b8c9f.jpg);background-size:100%;"></button>
-      </div>
+      </div><div class="pad"></div>
       <div class="title">Buckwheat Groats - Take Yourself Out The Game</div><div class="spacer"></div>
   <div class="videoWrapper videoWrapper169 js-videoWrapper">
     <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Buckwheat-Groats-Take-Yourself-Out-The-Game/945656bda2b0c4767f90b5cd6e317496e97114cd/d4cdce"></iframe>
     <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/k9jGbVm.jpg);background-size:125%;"></button>
-  </div>
+  </div><div class="pad"></div>
   <div class="title">Aesop Rock - ZZZ Top</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Aesop-Rock---ZZZ-Top/241a4a98173f110ded4b7dee354b96fc97df751f/646b0f"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/s7JZrJR.jpg);background-size:160%"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Action Bronson - Du-Rag vs Headband</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Action-Bronson-–-Durag-vs-Headband-featuring-Big-Body-Bes(1)/9898fff603ae6f635c92f7d61823351c776ba859/8b95e3"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/WUexf4R.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Jon Rafman + Oneohtrix Point Never - Still Life: Betamale</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Jon-Rafman-+-OPN,-STILL-LIFE---BETAMALE-(2013)/487a58b236e5da20b17891716529fb4917edc8f3/4ce81c"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/MhcBLDp.jpg);background-size:145%;background-position-x:25%;"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Mr. Oizo, Charli XCX - Hand In The Fire</div><div class="spacer spacer3"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Mr-Oizo---Hand-In-The-Fire-(feat.-Charli-XCX)/5d4721ed4e3e7ce72c0301355e29afb4f36ab10d/a4dee9"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/9881b2a19b67943c:d.jpg);background-size:cover;background-position-x:25%;"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Flying Lotus - Putty Boy Strut</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Flying-Lotus---Putty-Boy-Strut/386a45648afa1693ddb0e6a093f780e8d5021780/df26d0"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/7nBPrPB.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">KAS:ST - Hell On Earth</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/KAS--ST---Hell-On-Earth-/ed6f68d8b3c5178122216c3042b1cca8a3de4a0f/b78517"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/DsNF6kP.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Maxo Kream - Roaches</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Maxo-Kream---Roaches/6bc2ee72caea9689c600eaf47ea233a0ec39e2d5/b34cf9"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/6EkOG6s.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Zack Fox, Fabo - Stick!</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Zack-Fox---Stick!-(ft.-Fabo)--FCeiu4ozFGw-/73e54d01c5f5cd1f2b63c62b365bf17fc1e0489c/936389"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/Ooqr9Eg.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Hourglass Sea - L.A. Lights</div><div class="spacer spacer3"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Hourglass-sea---'L.A-Lights'--Music-Video---anHh8LUMdXQ-/6c6e6a30680e1ebc0d9b7833fb89e5b54c001bbb/4fdcbe"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/129def0e4fac0649.jpg);background-size:cover"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Spark Master Tape - Hanson Brothers</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Spark-Master-Tape---Hanson-Brothers/9e472445e67ecf4b9b79ea736c50215cfa235193/d07934"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/srB5TkO.jpg);background-size:115%"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Oneohtrix Point Never - Black Snow</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Oneohtrix-Point-Never---Black-Snow/470166a4dff64e861504c5c551deffd9574cc421/68cbc4"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/dAL5g3U.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Fever The Ghost - Source</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Fever-The-Ghost---Source/b22c278c7709b7e6b2b31ec10ac6838ca88cdaef/4d9ccd"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/S39dcRD.jpg);background-size:140%;"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Shlohmo - Buried</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Shlohmo---Buried/10a2e93abc7740283ea34d9e5849eaba93cd39a0/2b0202"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/SsLgMbN.jpg);background-size:140%;background-position-x:50px;"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Battles - Sugarfoot</div><div class="spacer spacer3"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Battles---Sugarfoot-ft.-Jon-Anderson---Prairie-WWWW-(Official-Video)--qi2jcC2XIcY-/c589d2b739a1e4691af4a30b3df8439ce7233186/1611cb"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/f03a00117319a014.jpg);background-size:cover;"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Aphex Twin - T69 Collapse</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Aphex-Twin---T69-Collapse/b7cae32e5c7cd9e7884f0d41e80ee03f66dc7cac/8c6c1d"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/sw0FGnR.jpg);background-size:190%"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Homeboy Sandman & Edan - The Gut</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Homeboy-Sandman---Edan---The-Gut/c5f4c4167819a5194efcddf6dd9dfc0ce70ad65a/82b4a8"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/bu5vqeK.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Forest Swords - Crow</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Forest-Swords---Crow/19ad86a5a7d4e227dc1a95124c903e61ae62e0e9/644cb1"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/J2atmnA.jpg);background-size:190%"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Salvatore Ganacci - Step-Grandma</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Salvatore-Ganacci---Step-Grandma/8d8919f042b7af3d365ec00bc94179a387b33c0a/f70d00"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/Yv493kZ.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
+    <div class="title">A$AP Mob, Juicy J - Yamborghini High</div><div class="spacer spacer3"></div>
+    <div class="videoWrapper videoWrapper169 js-videoWrapper">
+      <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/AAP-Mob---Yamborghini-High/9cc38cbe512297a198b6a7c93fa4b27dd5ceb831/d55a3b"></iframe>
+      <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/ee101ae5c89a3784.jpg)"></button>
+    </div><div class="pad"></div>
     <div class="title">Monolord - The Last Leaf</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/MONOLORD---The-Last-Leaf/b4cd65fc0a531e377fd12465de7be159f828b703/af6797"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/zfqCAdc.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Vince Staples - Law Of Averages</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Vince-Staples---LAW-OF-AVERAGES/99e9525b0664a35c1b971233dd6681591f597e18/bd9a80"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/YV6bnFQ.jpg)"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Suicideyear - Flood</div><div class="spacer"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Suicideyear-%E2%80%94-Flood-/c549258df476485da8a0e16c5cb7fb8846b4aaa3/d3a0af"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/Vl5QNm0.jpg);"></button>
-    </div>
+    </div><div class="pad"></div>
     <div class="title">Flying Lotus - Psychedelic Death Trip</div><div class="spacer spacer2"></div>
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Flying-Lotus---You're-Dead/214faa9be681db9d686f9ef545d89892e842b0d1/c632c0"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/0dX7aJv.jpg)"></button>
-    </div>
+    </div><div class="padfoot"></div>
 </main>
     <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
-
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
       <script id="rendered-js" >
 $(document).on('click', '.js-videoPoster', function (ev) {
@@ -334,14 +333,12 @@ $(document).on('click', '.js-videoPoster', function (ev) {
   var $wrapper = $poster.closest('.js-videoWrapper');
   videoPlay($wrapper);
 });
-
 function videoPlay($wrapper) {
   var $iframe = $wrapper.find('.js-videoIframe');
   var src = $iframe.data('src');
   $wrapper.addClass('videoWrapperActive');
   $iframe.attr('src', src);
 }
-
 function videoStop($wrapper) {
   if (!$wrapper) {
     var $wrapper = $('.js-videoWrapper');
@@ -354,5 +351,4 @@ function videoStop($wrapper) {
 }
     </script>
 </body>
-
 </html>
