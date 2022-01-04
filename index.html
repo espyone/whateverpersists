@@ -198,10 +198,10 @@ main {
         <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Unknown-Mortal-Orchestra---That-Life/a20a6de8f259478689af46490ed6fc88b06dc282/7a850b"></iframe>
         <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/WQxd66C.jpg);background-size:120%;"></button>
       </div><div class="pad"></div>
-      <div class="title">Mitchell Leonard - MA1NFRAME</div><div class="spacer spacer3"></div>
+      <div class="title">te' - <span style="font-size:91%;">楽観の深奥で燻る魔は、万人が宿す普遍的無意識の『罪』の残滓。</span></div><div class="spacer spacer3"></div>
       <div class="videoWrapper videoWrapper169 js-videoWrapper">
-        <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/MA1NFRAME-(Official-Music-Video)--nGWA3BBI2rc-/d23535d140916eb25a35b0b0021a595921ae819f/e879a1"></iframe>
-        <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/c34cb35f8e7b8c9f.jpg);background-size:100%;"></button>
+        <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/te'-_-%E6%A5%BD%E8%A6%B3%E3%81%AE%E6%B7%B1%E5%A5%A5%E3%81%A7%E7%87%BB%E3%82%8B%E9%AD%94%E3%81%AF%E3%80%81%E4%B8%87%E4%BA%BA%E3%81%8C%E5%AE%BF%E3%81%99%E6%99%AE%E9%81%8D%E7%9A%84%E7%84%A1%E6%84%8F%E8%AD%98%E3%81%AE%E3%80%8E%E7%BD%AA%E3%80%8F%E3%81%AE%E6%AE%8B%E6%BB%93%E3%80%82--CJnolgtt62M-/1ea2cfe1c7dbd3529a058e0f149c30a93b24120f/2e035c"></iframe>
+        <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/3b2849ef09fd8318.jpg);background-size:100%;"></button>
       </div><div class="pad"></div>
       <div class="title">Buckwheat Groats - Take Yourself Out The Game</div><div class="spacer"></div>
   <div class="videoWrapper videoWrapper169 js-videoWrapper">
@@ -322,9 +322,14 @@ main {
     <div class="videoWrapper videoWrapper169 js-videoWrapper">
       <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/Flying-Lotus---You're-Dead/214faa9be681db9d686f9ef545d89892e842b0d1/c632c0"></iframe>
       <button class="videoPoster js-videoPoster" style="background-image:url(https://i.imgur.com/0dX7aJv.jpg)"></button>
-    </div><div class="padfoot"></div>
+    </div><div class="title">Mitchell Leonard - MA1NFRAME</div><div class="spacer spacer3"></div>
+    <div class="videoWrapper videoWrapper169 js-videoWrapper">
+      <iframe class="videoIframe js-videoIframe" src="" frameborder="0" allowTransparency="true" allowfullscreen data-src="https://cdn.lbryplayer.xyz/api/v4/streams/free/MA1NFRAME-(Official-Music-Video)--nGWA3BBI2rc-/d23535d140916eb25a35b0b0021a595921ae819f/e879a1"></iframe>
+      <button class="videoPoster js-videoPoster" style="background-image:url(https://cdn.lbryplayer.xyz/speech/c34cb35f8e7b8c9f.jpg);background-size:100%;"></button>
+    </div></div><div class="padfoot"></div>
 </main>
     <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-1b93190375e9ccc259df3a57c1abc0e64599724ae30d7ea4c6877eb615f89387.js"></script>
+
   <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
       <script id="rendered-js" >
 $(document).on('click', '.js-videoPoster', function (ev) {
@@ -333,12 +338,14 @@ $(document).on('click', '.js-videoPoster', function (ev) {
   var $wrapper = $poster.closest('.js-videoWrapper');
   videoPlay($wrapper);
 });
+
 function videoPlay($wrapper) {
   var $iframe = $wrapper.find('.js-videoIframe');
   var src = $iframe.data('src');
   $wrapper.addClass('videoWrapperActive');
   $iframe.attr('src', src);
 }
+
 function videoStop($wrapper) {
   if (!$wrapper) {
     var $wrapper = $('.js-videoWrapper');
@@ -351,4 +358,5 @@ function videoStop($wrapper) {
 }
     </script>
 </body>
+
 </html>
