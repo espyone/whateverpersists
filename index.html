@@ -175,6 +175,67 @@ main {
   max-width: 700px;
   margin: 20px auto;
 }
+.container {
+  position:fixed;
+  z-index:12;
+  left:68%;
+  top:-30px;
+  width:600px;
+  height:600px;
+}
+.a, .b, .c {
+  font-family:'Fredoka One';
+  position:absolute;
+  font-size:35px;
+  top:50px;
+  left:-100px;
+  width:100vh;
+  text-shadow: 2px 2px black;
+}
+.a {color:#432b72; z-index:3;}
+.b {color:blue; z-index:2;}
+.c {color: orange; z-index:1;}
+
+
+.a {
+  animation: shuffle_a 3s linear 0s infinite;
+}
+@keyframes shuffle_a {
+  0% {top:50px; opacity:1; z-index:3;}
+  20% {top:80px;opacity:.95;z-index:3;}
+  30% {top:70px;opacity:.95; z-index:1;}
+  40% {top:60px;opacity:.95; z-index:1;transform:rotate(.22deg);}
+  50% {top:50px;opacity:.9; z-index:1;}
+  85% {opacity:1; z-index:2;}
+  90% {opacity:1; z-index:3;}
+
+}
+.b {
+  animation: shuffle_b 3s linear 0s infinite;
+}
+@keyframes shuffle_b {
+  0% {top:50px; opacity:1; z-index:2;transform:rotate(0deg);}
+  30% {top:50px; opacity:1; z-index:2;}
+  45% {top:50px; opacity:.85; z-index:2;}
+  55% {top:80px; opacity:.85; z-index:1;transform:rotate(-2.42deg);}
+  65% {top:70px; opacity:.85; z-index:1;}
+  75% {top:60px; opacity:.85; z-index:1;}
+  90% {top:50px;opacity:.94; z-index:1;transform:rotate(0deg);}
+  98% {top:55px;opacity:.90; z-index:2;transform:rotate(0deg);}
+}
+.c {
+  animation: shuffle_c 3s linear 0s infinite;
+}
+@keyframes shuffle_c {
+  0% {top:50px; opacity:1; z-index:1;}
+  49% {top:50px; opacity:1; z-index:1;}
+  70% {top:50px; 40px; opacity:2; z-index:2;}
+  77% {top:40px; opacity:1; z-index:3;}
+  82% {top:40px; opacity:1; z-index:2;}
+  88% {top:70px;opacity:1; z-index:3;}
+  95% {top:65px;opacity:1; z-index:1;}
+  95% {top:52px;opacity:1; z-index:1;}
+}
 </style>
   <script>
   window.console = window.console || function(t) {};
@@ -187,6 +248,11 @@ main {
 </head>
 <body translate="no">
   <main>
+    <div class="container">
+      <div class = "a">whatever persists</div>
+      <div class = "b">whatever persists</div>
+      <div class = "c">whatever persists</div>
+    </div>
   <h1></h1>
   <div class="ytbutton"><a href="http://tinyurl.com/2enn2jkj"><img src="https://www.google.com/s2/favicons?sz=64&domain_url=www.youtube.com" style="width:80%;"></img></a></div>
   <div class="marquee">WHATEVER PERSISTS</div>
