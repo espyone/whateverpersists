@@ -173,7 +173,7 @@ main {
 
 
 .a {
-  animation: shuffle_a 3s linear 0s infinite;
+  animation: shuffle_a 3s linear 3s infinite;
 }
 @keyframes shuffle_a {
   0% {top:50px; opacity:1; z-index:3;}
@@ -184,9 +184,21 @@ main {
   85% {opacity:1; z-index:2;}
   90% {opacity:1; z-index:3;}
 
+  
+    0% {opacity:0}
+    4% {opacity:1}
+    10% {opacity:0}
+    14% {opacity:1}
+    17% {opacity:0}
+    18% {opacity:0}
+    28% {opacity:.60}
+    39% {opacity:1}
+    58% {opacity:1}
+    69% {opacity:0}
+
 }
 .b {
-  animation: shuffle_b 3s linear 0s infinite;
+  animation: shuffle_b 3s linear 3s infinite;
 }
 @keyframes shuffle_b {
   0% {top:50px; opacity:1; z-index:2;transform:rotate(0deg);}
@@ -197,9 +209,19 @@ main {
   75% {top:60px; opacity:.85; z-index:1;}
   90% {top:50px;opacity:.94; z-index:1;transform:rotate(0deg);}
   98% {top:55px;opacity:.90; z-index:2;transform:rotate(0deg);}
+
+    0% {opacity:1}
+    35.7% {opacity:1}
+    38% {opacity:0}
+    39% {opacity:1}
+    40% {opacity:0}
+    43% {opacity:.4}
+    59% {opacity:1}
+    82% {opacity:0}
+    89.3% {opacity:1}
 }
 .c {
-  animation: shuffle_c 3s linear 0s infinite;
+  animation: shuffle_c 3s linear 6s infinite;
 }
 @keyframes shuffle_c {
   0% {top:50px; opacity:1; z-index:1;}
@@ -210,6 +232,15 @@ main {
   88% {top:70px;opacity:1; z-index:3;}
   95% {top:65px;opacity:1; z-index:1;}
   95% {top:52px;opacity:1; z-index:1;}
+
+  
+
+    58% {opacity:1}
+    59% {opacity:0}
+    63% {opacity:1}
+    78% {opacity:0}
+    88% {opacity:.30}
+    98% {opacity:1}
 }
 .title_a {
   z-index:12;
