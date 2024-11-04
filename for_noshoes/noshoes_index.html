@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>No Shoes Redirect</title>
+    <title>No Shoes Index</title>
     <script>
-        window.onload = function() {
-            window.location.replace("noshoes_001.html");
-        };
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch('noshoes_001.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('content').innerHTML = html;
+                })
+                .catch(err => console.warn('Failed to load content:', err));
+        });
     </script>
 </head>
 <body>
-    <p>If you are not redirected automatically, <a href="noshoes_001.html">click here</a>.</p>
+    <div id="content"></div>
 </body>
 </html>
