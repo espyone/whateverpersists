@@ -1,0 +1,145 @@
+
+    <style>
+        body {
+            background-color: lightgrey;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .thumbnail-wrapper {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .thumbnail {
+            width: 100px;
+            height: 100px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 3px solid blue;
+            cursor: pointer;
+            position: relative;
+        }
+        .thumbnail-overlay {
+            width: 50%;
+            height: 75%;
+            position: absolute;
+            top: 12.5%;
+            left: 25%;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Aldrich', sans-serif;
+            color: yellow;
+            font-size: 6rem;
+            text-shadow: 5px 5px 5px black;
+            pointer-events: none;
+        }
+        .thumbnail.active {
+            border-color: yellow;
+        }
+        .videoContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            position: relative;
+        }
+        .videoWrapper {
+            width: 80vw;
+            max-width: 80vw;
+            max-height: 80vh;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            overflow: hidden;
+            background: black;
+        }
+        .videoIframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            object-fit: cover;
+        }
+        .title-overlay {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .title {
+            width: 95%;
+            height: 4px;
+            opacity: 1;
+            z-index: 4;
+            font-size: 140%;
+            font-family: 'Aldrich', sans-serif;
+            color: white;
+            position: absolute;
+            top: 14px;
+            left: 0;
+            text-align: left;
+            text-shadow: 1px 1px red;
+            padding-left: 20px;
+        }
+    </style>
+    <script>
+        function loadVideo(title, videoUrl, thumbnailUrl, index) {
+            console.log(`Switching to video: ${videoUrl} with title: ${title}`);
+            const iframe = document.querySelector(".videoWrapper .videoIframe");
+            iframe.src = videoUrl;
+            document.querySelector(".title-overlay .title").textContent = title;
+            document.querySelectorAll('.thumbnail').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+        }
+    </script>
+    <div class="thumbnail-wrapper">
+    
+        <div class="thumbnail" style="background-image:url(https://thumbs.odycdn.com/b017eb5a3cdbaafd1431ee087aaf5d86.webp)" onclick="loadVideo('Tear Da Club Up Thugs featuring Hot Boy$ and Big Tymers - Why Ya Hatin\'', 'https://player.odycdn.com/api/v3/streams/free/hyp_cas/3970c61980882d46f10c290a56bcbc5c42775c4e/0af0cc.mp4', 'https://thumbs.odycdn.com/b017eb5a3cdbaafd1431ee087aaf5d86.webp', 0)">
+            <div class="thumbnail-overlay">1</div>
+        </div>
+        
+
+        <div class="thumbnail" style="background-image:url(https://thumbs.odycdn.com/2c0d91f8175ecf9d3ffe6d8ad9c8588f.webp)" onclick="loadVideo('Redman - I\'ll Bee Dat', 'https://player.odycdn.com/api/v3/streams/free/r_ibd/b50353985dfe8f3708f566af6cd878abb1fcbee6/3de78d.mp4', 'https://thumbs.odycdn.com/2c0d91f8175ecf9d3ffe6d8ad9c8588f.webp', 1)">
+            <div class="thumbnail-overlay">2</div>
+        </div>
+        
+
+        <div class="thumbnail" style="background-image:url(https://thumbs.odycdn.com/30afe40646e01ab0f75d16a1cf8e2d32.webp)" onclick="loadVideo('Youngbloodz featuring Big Boi and Cutty Cartel - 85', 'https://player.odycdn.com/api/v3/streams/free/yb_85/072a8db410538cd31b9f433b85a0ef9999935d6e/3825b5.mp4', 'https://thumbs.odycdn.com/30afe40646e01ab0f75d16a1cf8e2d32.webp', 2)">
+            <div class="thumbnail-overlay">3</div>
+        </div>
+        
+
+        <div class="thumbnail" style="background-image:url(https://thumbs.odycdn.com/38e1c4fcbc1f4a15f434b6e7a539e826.webp)" onclick="loadVideo('Bone Crusher featuring Cam\'Ron, Jadakiss and Busta Rhymes - Never Scared (Takeover Remix)', 'https://player.odycdn.com/v6/streams/440d5ef07e857bd9fe3c8b8859e0d810c3993078/30c4b6.mp4', 'https://thumbs.odycdn.com/38e1c4fcbc1f4a15f434b6e7a539e826.webp', 3)">
+            <div class="thumbnail-overlay">4</div>
+        </div>
+        
+
+        <div class="thumbnail" style="background-image:url(https://thumbs.odycdn.com/a300b061cf974d8a1dbcb4b4c1bc5bbf.webp)" onclick="loadVideo('Ghostface Killah featuring Raekwon, Cappadonna and The Force MD\'s - Daytona 500', 'https://player.odycdn.com/v6/streams/6a4b26bdfc313f302bcaea9135bb69202088d1d8/8a9b65.mp4', 'https://thumbs.odycdn.com/a300b061cf974d8a1dbcb4b4c1bc5bbf.webp', 4)">
+            <div class="thumbnail-overlay">5</div>
+        </div>
+        
+</div><div class="videoContainer">
+                <div class="videoWrapper">
+                    <div class="title-overlay">
+                        <div class="title">Tear Da Club Up Thugs featuring Hot Boy$ and Big Tymers - Why Ya Hatin&#x27</div>
+                    </div>
+                    <iframe class="videoIframe js-videoIframe" src="https://player.odycdn.com/api/v3/streams/free/hyp_cas/3970c61980882d46f10c290a56bcbc5c42775c4e/0af0cc.mp4" frameborder="0" allowTransparency="true" allowfullscreen></iframe>
+                </div>
+            </div>
