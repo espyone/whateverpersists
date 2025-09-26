@@ -124,13 +124,14 @@
 
     .sticker {
       position: absolute;
-      right: 5px;
-      bottom: 5px;
+      right: 9px;
+	  transform: rotate(3deg);
+      top: 11px;
       z-index: 3;
-      width: 50px;        /* fixed small size */
+      width: 43px;        /* fixed small size */
       height: auto;
-      max-width: 12%;     /* responsive scaling */
-      opacity: 0.9;
+      max-width: 19%;     /* responsive scaling */
+      opacity: 1;
     }
 
     .container {
@@ -162,11 +163,25 @@
  <main>
   <div class="container">
     <div class="a">whatever persists</div>
-    <div class="b">whatever persists</div>
-    <div class="c">whatever persists</div>
   </div>
 
-  <!-- ===================== VIDEO 1 ===================== 
+  <!-- ===================== EPMD - Richter Scale ===================== -->
+  <section class="videoSection" id="video2">
+    <div class="title">EPMD - Richter Scale</div>
+    <div class="spacer spacer2"></div> 
+    <div class="videoWrapper js-videoWrapper" data-aspect="43">
+      <img class="sticker" src="https://i.imgur.com/9hMDWSa.png" alt="Parental Advisory">
+      <iframe class="videoIframe js-videoIframe"
+              src=""
+              data-src="https://archive.org/embed/epmd-richter_scale?autoplay=1"
+              frameborder="0"
+              allowfullscreen></iframe>
+      <button class="videoPoster js-videoPoster"
+              style="background-image:url(https://i.imgur.com/TxicWJ9.jpeg)"
+    </div>
+  </section>
+  
+    <!-- ===================== Prince Paul - A Prince Among Thieves ===================== 
   <section class="videoSection" id="video1">
     <div class="title">Prince Paul - A Prince Among Thieves</div>
     <div class="spacer"></div> 
@@ -174,7 +189,7 @@
       <img class="sticker" src="https://i.imgur.com/9hMDWSa.png" alt="Parental Advisory">
       <iframe class="videoIframe js-videoIframe"
               src=""
-              data-src="https://drive.google.com/file/d/1zm_0dCJ9_H-dGdcYpUD3l4Fj4ZyZOAlv/preview?autoplay=1"
+              data-src="https://archive.org/embed/apat-dirty?autoplay=1"
               frameborder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowfullscreen></iframe>
@@ -185,24 +200,8 @@
   </section> 
   -->
   
-
-  <!-- ===================== VIDEO 2 ===================== -->
-  <section class="videoSection" id="video2">
-    <div class="title">EPMD - Richter Scale</div>
-    <div class="spacer spacer2"></div> 
-    <div class="videoWrapper js-videoWrapper" data-aspect="43">
-      <img class="sticker" src="https://i.imgur.com/9hMDWSa.png" alt="Parental Advisory">
-      <iframe class="videoIframe js-videoIframe"
-              src=""
-              data-src="https://drive.google.com/file/d/1pXTG3gygpSX--2GD2RPTNtG83kZdYvPt/preview?autoplay=1"
-              frameborder="0"
-              allowfullscreen></iframe>
-      <button class="videoPoster js-videoPoster"
-              style="background-image:url(https://i.imgur.com/TxicWJ9.jpeg)"
-    </div>
-  </section>
   
-  <!-- ===================== VIDEO 3 ===================== 
+  <!-- ===================== Ghostface Killah featuring Raekwon, Cappadonna - Daytona 500 ===================== 
   <section class="videoSection" id="video2">
     <div class="title">Ghostface Killah featuring Raekwon, Cappadonna - Daytona 500</div>
     <div class="spacer spacer3"></div> 
@@ -210,7 +209,7 @@
       <img class="sticker" src="https://i.imgur.com/9hMDWSa.png" alt="Parental Advisory">
       <iframe class="videoIframe js-videoIframe"
               src=""
-              data-src="https://drive.google.com/file/d/1HXCTMaPJzQp7VYry-D2HroiO1RMqEigT/preview?autoplay=1"
+              data-src="https://archive.org/embed/ghostface_killah-daytona_500?autoplay=1"
               frameborder="0"
               allowfullscreen></iframe>
       <button class="videoPoster js-videoPoster"
