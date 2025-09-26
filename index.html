@@ -125,13 +125,39 @@
     .sticker {
       position: absolute;
       right: 9px;
-	  transform: rotate(3deg);
       top: 11px;
       z-index: 3;
       width: 43px;        /* fixed small size */
       height: auto;
       max-width: 19%;     /* responsive scaling */
-      opacity: 1;
+      opacity: .65;
+
+      /* resting pose */
+      transform: rotate(3deg) scale(1);
+      transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+
+    @keyframes stickerLoop {
+      0%   { transform: rotate(3deg) scale(1); }
+      8.3% { transform: rotate(5deg) scale(1.05); }
+      16.6%{ transform: rotate(2deg) scale(1); }
+      25%  { transform: rotate(0deg) scale(0.95); }
+      33.3%{ transform: rotate(-2deg) scale(1); }
+      41.6%{ transform: rotate(-4deg) scale(1.05); }
+      50%  { transform: rotate(-2deg) scale(1); }
+      58.3%{ transform: rotate(0deg) scale(0.95); }
+      66.6%{ transform: rotate(2deg) scale(1); }
+      75%  { transform: rotate(4deg) scale(1.05); }
+      83.3%{ transform: rotate(2deg) scale(1); }
+      91.6%{ transform: rotate(0deg) scale(0.90); }
+      100% { transform: rotate(3deg) scale(1); }
+    }
+
+    .sticker.playing {
+      animation-name: stickerLoop;
+      animation-iteration-count: infinite;
+      animation-timing-function: steps(12, end);
+      transition: none; /* disable spring transition while looping */
     }
 
     .container {
@@ -155,8 +181,6 @@
     .a { color: #432b72; z-index: 3; animation: shuffle_a 3s linear 3s infinite; }
     .b { color: blue; z-index: 2; animation: shuffle_b 3s linear 3s infinite; }
     .c { color: orange; z-index: 1; animation: shuffle_c 3s linear 6s infinite; }
-
-    /* Keyframes unchanged (omitted for brevity, same as before) */
   </style>
 </head>
 <body>
@@ -166,92 +190,90 @@
   </div>
 
   <!-- ===================== EPMD - Richter Scale ===================== -->
-  <section class="videoSection" id="video2">
+  <section class="videoSection">
     <div class="title">EPMD - Richter Scale</div>
     <div class="spacer spacer2"></div> 
     <div class="videoWrapper js-videoWrapper" data-aspect="43">
       <img class="sticker" src="https://i.imgur.com/9hMDWSa.png" alt="Parental Advisory">
-      <iframe class="videoIframe js-videoIframe"
-              src=""
-              data-src="https://archive.org/embed/epmd-richter_scale?autoplay=1"
-              frameborder="0"
-              allowfullscreen></iframe>
-      <button class="videoPoster js-videoPoster"
-              style="background-image:url(https://i.imgur.com/TxicWJ9.jpeg)"
+      <video class="videoIframe"
+             controls
+             playsinline
+             poster="https://i.imgur.com/TxicWJ9.jpeg">
+        <source src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
   </section>
   
-    <!-- ===================== Prince Paul - A Prince Among Thieves ===================== 
-  <section class="videoSection" id="video1">
+  <!-- ===================== Prince Paul - A Prince Among Thieves ===================== -->
+  <section class="videoSection">
     <div class="title">Prince Paul - A Prince Among Thieves</div>
     <div class="spacer"></div> 
     <div class="videoWrapper js-videoWrapper" data-aspect="43">
       <img class="sticker" src="https://i.imgur.com/9hMDWSa.png" alt="Parental Advisory">
-      <iframe class="videoIframe js-videoIframe"
-              src=""
-              data-src="https://archive.org/embed/apat-dirty?autoplay=1"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
-      <button class="videoPoster js-videoPoster"
-              style="background-image:url(https://i.imgur.com/vxD2yLV.jpeg)">
-      </button>
+      <video class="videoIframe"
+             controls
+             playsinline
+             poster="https://i.imgur.com/vxD2yLV.jpeg">
+        <source src="https://archive.org/serve/apat-dirty/APAT_Dirty.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
   </section> 
-  -->
   
-  
-  <!-- ===================== Ghostface Killah featuring Raekwon, Cappadonna - Daytona 500 ===================== 
-  <section class="videoSection" id="video2">
+  <!-- ===================== Ghostface Killah - Daytona 500 ===================== -->
+  <section class="videoSection">
     <div class="title">Ghostface Killah featuring Raekwon, Cappadonna - Daytona 500</div>
     <div class="spacer spacer3"></div> 
     <div class="videoWrapper js-videoWrapper" data-aspect="43">
       <img class="sticker" src="https://i.imgur.com/9hMDWSa.png" alt="Parental Advisory">
-      <iframe class="videoIframe js-videoIframe"
-              src=""
-              data-src="https://archive.org/embed/ghostface_killah-daytona_500?autoplay=1"
-              frameborder="0"
-              allowfullscreen></iframe>
-      <button class="videoPoster js-videoPoster"
-              style="background-image:url(https://i.imgur.com/nIGpKWi.jpeg)"
+      <video class="videoIframe"
+             controls
+             playsinline
+             poster="https://i.imgur.com/nIGpKWi.jpeg">
+        <source src="https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
     </div>
   </section>
-  -->
-
 
   <div class="padfoot"></div>
 </main>
 
-
   <!-- jQuery (CDN) -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Custom Script -->
+  <!-- Sticker Control Script -->
   <script>
-    $(document).on('click', '.js-videoPoster', function (ev) {
-      ev.preventDefault();
-      var $poster = $(this);
-      var $wrapper = $poster.closest('.js-videoWrapper');
-      videoPlay($wrapper);
+  document.querySelectorAll('video').forEach(function(video) {
+    const sticker = video.closest('.videoWrapper').querySelector('.sticker');
+
+    function setRandomDuration() {
+      const randomTime = (Math.random() * 2 + 2).toFixed(2); // 2s–4s
+      sticker.style.animationDuration = randomTime + "s";
+    }
+
+    video.addEventListener('play', function() {
+      sticker.classList.add('playing');
+      setRandomDuration();
     });
 
-    function videoPlay($wrapper) {
-      var $iframe = $wrapper.find('.js-videoIframe');
-      var src = $iframe.data('src') || $iframe.attr('src');
-      $wrapper.addClass('videoWrapperActive');
-      $iframe.attr('src', src);
-    }
+    video.addEventListener('pause', function() {
+      sticker.classList.remove('playing');
+      sticker.style.animationDuration = "";
+    });
 
-    function videoStop($wrapper) {
-      if (!$wrapper) {
-        $wrapper = $('.js-videoWrapper');
-        $iframe = $('.js-videoIframe');
-      } else {
-        $iframe = $wrapper.find('.js-videoIframe');
+    video.addEventListener('ended', function() {
+      sticker.classList.remove('playing');
+      sticker.style.animationDuration = "";
+    });
+
+    sticker.addEventListener('animationiteration', function() {
+      if (sticker.classList.contains('playing')) {
+        setRandomDuration();
       }
-      $wrapper.removeClass('videoWrapperActive');
-      $iframe.attr('src', '');
-    }
+    });
+  });
   </script>
 </body>
 </html>
