@@ -255,9 +255,7 @@ https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4" typ
       </video>
     </div>
   </section>
-
-
- <!-- ===================== Outkast - Elevators  ===================== -->
+<!-- ===================== Outkast - Elevators  ===================== -->
 <section class="videoSection">
   <div> 
     <span class="title">Outkast - Elevators (Me & You)</span>
@@ -265,7 +263,9 @@ https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4" typ
   <div class="spacer spacer3"></div> 
   <div class="videoWrapper js-videoWrapper" data-aspect="43">
     <img class="sticker" src="./newindex_files/9hMDWSa.png" alt="Parental Advisory">
-    <video class="videoIframe" controls playsinline poster="https://i.imgur.com/mo1z196.jpeg">
+    
+    <!-- Give this video a unique class -->
+    <video class="videoIframe video-elevators" controls playsinline poster="https://i.imgur.com/mo1z196.jpeg">
       <source src="https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4" type="video/mp4">
       
       <!-- Injected VTT file -->
@@ -279,6 +279,16 @@ https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4" typ
     </video>
   </div>
 </section>
+
+<style>
+/* Independent subtitle styling for THIS video only */
+.video-elevators::cue {
+  font-size: 44px;        /* larger font */
+  color: cyan;            /* custom color */
+  background: transparent;
+  text-shadow: 2px 2px 4px black;
+}
+</style>
   
   
   <div class="padfoot"></div>
