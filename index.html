@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<!-- saved from url=(0029)https://whateverpersists.com/ -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=.71, maximum-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <title>Whatever Persists</title>
 
-  <!-- Google Font -->
-  <link href="./newindex_files/css2" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Fredoka+One&display=swap" rel="stylesheet">
 
   <style>
     body {
@@ -24,7 +24,6 @@
     .pad { padding-bottom: 19.7px; }
     .padfoot { padding-bottom: 60px; }
 
-    /* Shared shape for all spacers */
     .spacer, .spacer2, .spacer3 {
       position: relative;
       z-index: 3;
@@ -34,18 +33,9 @@
       width: 97.5%;
       border-radius: 48% 48% 0 0;
     }
-
-    /* Colors */
     .spacer  { background-color: purple; }
     .spacer2 { background-color: blue; }
     .spacer3 { background-color: #7AC269; }
-
-    .ytbutton {
-      position: fixed;
-      z-index: 16;
-      right: 12px;
-      bottom: 23px;
-    }
 
     .title {
       width: 95%;
@@ -59,7 +49,7 @@
       text-align: left;
       text-shadow: 1px 1px red;
     }
-	.title2 {
+    .title2 {
       width: 95%;
       opacity: 1;
       z-index: 4;
@@ -80,73 +70,27 @@
       overflow: hidden;
     }
 
-    /* Aspect ratios using data-aspect */
-    .videoWrapper[data-aspect="169"] { padding-top: 56.25%; } /* 16:9 */
-    .videoWrapper[data-aspect="43"]  { padding-top: 75%; }    /* 4:3 */
+    .videoWrapper[data-aspect="169"] { padding-top: 56.25%; }
+    .videoWrapper[data-aspect="43"]  { padding-top: 75%; }
 
     .videoIframe {
       position: absolute;
       top: 0; bottom: 0; left: 0; right: 0;
       width: 100%; height: 100%;
-      background-color: transparent;
-    }
-
-    .videoPoster {
-      position: absolute;
-      top: 0; right: 0; bottom: 0; left: 0;
-      width: 100%; height: 100%;
-      cursor: pointer;
-      border: 0; outline: none;
-      background-size: cover;
-      background-position: center;
-      text-indent: -999em;
-      overflow: hidden;
-      opacity: 1;
-      transition: opacity 800ms, height 0s;
-    }
-    .videoPoster:before {
-      content: "";
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 80px; height: 80px;
-      margin: -40px 0 0 -40px;
-      border: 5px solid #fff;
-      border-radius: 100%;
-      transition: border-color 300ms;
-    }
-    .videoPoster:after {
-      content: "";
-      position: absolute;
-      top: 50%; left: 50%;
-      margin: -20px 0 0 -10px;
-      border-left: 40px solid #fff;
-      border-top: 25px solid transparent;
-      border-bottom: 25px solid transparent;
-      transition: border-color 300ms;
-    }
-    .videoPoster:hover:before,
-    .videoPoster:focus:before { border-color: #f00; }
-    .videoPoster:hover:after,
-    .videoPoster:focus:after { border-left-color: #f00; }
-    .videoWrapperActive .videoPoster {
-      opacity: 0;
-      height: 0;
-      transition-delay: 0s, 800ms;
+      background: transparent;
+      z-index: 1; /* main video */
     }
 
     .sticker {
       position: absolute;
       right: 9px;
       top: 11px;
-      z-index: 3;
-      width: 43px;        /* fixed small size */
+      width: 84px;
       height: auto;
-      max-width: 19%;     /* responsive scaling */
-      opacity: .65;
-
-      /* resting pose */
+      opacity: .95;
       transform: rotate(3deg) scale(1);
       transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+      z-index: 2; /* above main video but below overlay */
     }
 
     @keyframes stickerLoop {
@@ -169,167 +113,232 @@
       animation-name: stickerLoop;
       animation-iteration-count: infinite;
       animation-timing-function: steps(12, end);
-      transition: none; /* disable spring transition while looping */
+      transition: none;
     }
 
-    .container {
-      position: fixed;
-      z-index: 5;
-      left: 57%;
-      top: -40px;
-      width: 300px;
-      height: 300px;
+    #overlayVideo {
+      z-index: 4; /* always above sticker + main video */
+      pointer-events: none;
     }
 
-    .a, .b, .c {
-      font-family: 'Fredoka One', cursive;
-      position: absolute;
-      font-size: 35px;
-      top: 50px;
-      left: -100px;
-      width: 100vh;
-      text-shadow: 2px 2px black;
+    .controls {
+      margin-top: 20px;
+      text-align: center;
     }
-    .a { color: #432b72; z-index: 3; animation: shuffle_a 3s linear 3s infinite; }
-    .b { color: blue; z-index: 2; animation: shuffle_b 3s linear 3s infinite; }
-    .c { color: orange; z-index: 1; animation: shuffle_c 3s linear 6s infinite; }
+    .controls button {
+      margin: 5px;
+      padding: 10px 15px;
+      font-family: 'Aldrich', sans-serif;
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    /* Global captions styling */
+    video::cue {
+      font-size: 22px;
+      color: cyan;
+      background: transparent;
+      text-shadow: 2px 2px 4px black;
+    }
   </style>
 </head>
 
 <body>
- <main>
+<main>
   <div class="container">
     <div class="a">whatever persists</div>
   </div>
 
-  <!-- ===================== EPMD - Richter Scale ===================== -->
+  <!-- ===================== MAIN PLAYER ===================== -->
   <section class="videoSection">
-    <div class="title">EPMD - Richter Scale</div>
-    <div class="spacer spacer2"></div> 
-    <div class="videoWrapper js-videoWrapper" data-aspect="43">
+    <div id="videoTitle" class="title">EPMD - Richter Scale</div>
+    <div id="videoSpacer" class="spacer spacer2"></div> 
+    <div id="videoWrapper" class="videoWrapper" data-aspect="43">
       <img class="sticker" src="./newindex_files/9hMDWSa.png" alt="Parental Advisory">
-      <video class="videoIframe" controls="" playsinline="" poster="https://i.imgur.com/TxicWJ9.jpeg">
-        <source src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  </section>
-  
-  <!-- ===================== Prince Paul - A Prince Among Thieves ===================== -->
-  <section class="videoSection">
-    <div class="title">Prince Paul - A Prince Among Thieves</div>
-    <div class="spacer"></div> 
-    <div class="videoWrapper js-videoWrapper" data-aspect="43">
-      <img class="sticker" src="./newindex_files/9hMDWSa.png" alt="Parental Advisory">
-      <video class="videoIframe" controls="" playsinline="" poster="https://i.imgur.com/vxD2yLV.jpeg">
-        <source src="https://archive.org/serve/apat-dirty/APAT_Dirty.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  </section> 
-  
-  <!-- ===================== Ghostface Killah - Daytona 500 ===================== -->
-  <section class="videoSection">
-    <div> <span class="title">Ghostface Killah </span><span class="title2">featuring Raekwon, Cappadonna and The Force MD's</span> <span class="title">- Daytona 500</span></div>
-    <div class="spacer spacer3"></div> 
-    <div class="videoWrapper js-videoWrapper" data-aspect="43">
-      <img class="sticker" src="./newindex_files/9hMDWSa.png" alt="Parental Advisory">
-      <video class="videoIframe" controls="" playsinline="" poster="https://i.imgur.com/nIGpKWi.jpeg">
-        <source src="https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  </section>
-  
-   
-  <!-- ===================== Bone Crusher - Never Scared Remux ===================== -->
-  <section class="videoSection">
-    <div> <span class="title">Bone Crusher</span><span class="title2"> featuring Cam'Ron, Jadakiss, Busta Rhymes</span> <span class="title"> - Never Scared (Remix)</span></div>
-    <div class="spacer spacer3"></div> 
-    <div class="videoWrapper js-videoWrapper" data-aspect="43">
-      <img class="sticker" src="./newindex_files/9hMDWSa.png" alt="Parental Advisory">
-      <video class="videoIframe" controls="" playsinline="" poster="https://i.imgur.com/mo1z196.jpeg">
-        <source src="
-https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  </section>
-<!-- ===================== Outkast - Elevators  ===================== -->
-<section class="videoSection">
-  <div> 
-    <span class="title">Outkast - Elevators (Me & You)</span>
-  </div>
-  <div class="spacer spacer3"></div> 
-  <div class="videoWrapper js-videoWrapper" data-aspect="43">
-    <img class="sticker" src="./newindex_files/9hMDWSa.png" alt="Parental Advisory">
-    
-    <!-- Give this video a unique class -->
-    <video class="videoIframe video-elevators" controls playsinline poster="./newindex_files/outkastframe.jpg">
-      <source src="https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4" type="video/mp4">
-      
-      <!-- Injected VTT file -->
-      <track src="/subtitles/outkast-elevators.vtt" 
-             kind="subtitles" 
-             srclang="en" 
-             label="English" 
-             default>
-      
-      Your browser does not support the video tag.
-    </video>
-  </div>
-</section>
 
-<style>
-/* Independent subtitle styling for THIS video only */
-.video-elevators::cue {
-  font-size: 44px;        /* larger font */
-  color: cyan;            /* custom color */
-  background: transparent;
-  text-shadow: 2px 2px 4px black;
-}
-</style>
-  
-  
+      <video id="mainVideo" class="videoIframe" controls playsinline poster="https://i.imgur.com/TxicWJ9.jpeg">
+        <source id="mainSource" src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4" type="video/mp4">
+      </video>
+
+      <video id="overlayVideo" class="videoIframe" playsinline muted loop style="opacity:1; mix-blend-mode:hard-light;">
+        <source id="overlaySource" src="https://archive.org/serve/1output-alpha/167782-837438539_43.webm" type="video/webm">
+      </video>
+    </div>
+  </section>
+
+  <!-- ===================== CONTROLS (Carousel) ===================== -->
+  <div class="controls">
+    <button onclick="loadVideo(
+      'EPMD - Richter Scale',
+      'spacer2',
+      '43',
+      'https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4',
+      'https://i.imgur.com/TxicWJ9.jpeg',
+      null,
+      '167782-837438539'
+    )">EPMD</button>
+
+    <button onclick="loadVideo(
+      'Prince Paul - A Prince Among Thieves',
+      'spacer',
+      '43',
+      'https://archive.org/serve/apat-dirty/APAT_Dirty.mp4',
+      'https://i.imgur.com/vxD2yLV.jpeg',
+      null,
+      '167782-837438539'
+    )">Prince Paul</button>
+
+    <button onclick="loadVideo(
+      'Ghostface Killah - Daytona 500',
+      'spacer3',
+      '43',
+      'https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4',
+      'https://i.imgur.com/nIGpKWi.jpeg',
+      null,
+      '167782-837438539'
+    )">Ghostface KIllah</button>
+
+    <button onclick="loadVideo(
+      'Bone Crusher - Never Scared (Remix)',
+      'spacer3',
+      '43',
+      'https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4',
+      'https://i.imgur.com/mo1z196.jpeg',
+      null,
+      '167782-837438539'
+    )">Bone Crusher</button>
+
+    <button onclick="loadVideo(
+      'Outkast - Elevators (Me & You)',
+      'spacer3',
+      '169',
+      'https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4',
+      'http://whateverpersists.com/newindex_files/outkastframe.jpg',
+      'http://whateverpersists.com/subtitles/outkast-elevators.vtt',
+      '167782-837438539'
+    )">Outkast</button>
+  </div>
+
   <div class="padfoot"></div>
 </main>
 
-  <!-- jQuery (CDN) -->
-  <script src="./newindex_files/jquery-3.6.0.min.js"></script>
+<!-- jQuery -->
+<script src="./newindex_files/jquery-3.6.0.min.js"></script>
 
-  <!-- Sticker Control Script -->
-  <script>
-  document.querySelectorAll('video').forEach(function(video) {
-    const sticker = video.closest('.videoWrapper').querySelector('.sticker');
-
-    function setRandomDuration() {
-      const randomTime = (Math.random() * 2 + 2).toFixed(2); // 2s–4s
-      sticker.style.animationDuration = randomTime + "s";
-    }
-
-    video.addEventListener('play', function() {
-      sticker.classList.add('playing');
-      setRandomDuration();
-    });
-
-    video.addEventListener('pause', function() {
-      sticker.classList.remove('playing');
-      sticker.style.animationDuration = "";
-    });
-
-    video.addEventListener('ended', function() {
-      sticker.classList.remove('playing');
-      sticker.style.animationDuration = "";
-    });
-
-    sticker.addEventListener('animationiteration', function() {
-      if (sticker.classList.contains('playing')) {
-        setRandomDuration();
-      }
-    });
+<script>
+// Sticker animation control
+document.querySelectorAll('video').forEach(function(video) {
+  const sticker = video.closest('.videoWrapper')?.querySelector('.sticker');
+  if (!sticker) return;
+  function setRandomDuration() {
+    const randomTime = (Math.random() * 2 + 2).toFixed(2);
+    sticker.style.animationDuration = randomTime + "s";
+  }
+  video.addEventListener('play', function() {
+    sticker.classList.add('playing');
+    setRandomDuration();
   });
-  </script>
+  video.addEventListener('pause', function() {
+    sticker.classList.remove('playing');
+    sticker.style.animationDuration = "";
+  });
+  video.addEventListener('ended', function() {
+    sticker.classList.remove('playing');
+    sticker.style.animationDuration = "";
+  });
+  sticker.addEventListener('animationiteration', function() {
+    if (sticker.classList.contains('playing')) setRandomDuration();
+  });
+});
 
+const main = document.getElementById('mainVideo');
+const overlay = document.getElementById('overlayVideo');
 
-</body></html>
+// === RANDOM START + RANDOM SPEED ===
+function randomizeOverlay() {
+  if (overlay.duration) {
+    const randomTime = Math.random() * overlay.duration;
+    overlay.currentTime = randomTime;
+  }
+  overlay.playbackRate = (Math.random() * 1.5 + 0.5).toFixed(2);
+}
 
+overlay.addEventListener("loadedmetadata", () => {
+  randomizeOverlay();
+});
+overlay.addEventListener("ended", () => {
+  randomizeOverlay();
+  overlay.play();
+});
+main.addEventListener("play", () => {
+  randomizeOverlay();
+  overlay.play();
+});
+main.addEventListener("pause", () => overlay.pause());
+main.addEventListener("seeking", () => {
+  if (overlay.duration) {
+    overlay.currentTime = main.currentTime % overlay.duration;
+  }
+});
+
+// Carousel loader with captions + overlay
+function loadVideo(title, spacerClass, aspect, src, poster, vttFile, overlayBase) {
+  const videoTitle = document.getElementById("videoTitle");
+  const videoSpacer = document.getElementById("videoSpacer");
+  const videoWrapper = document.getElementById("videoWrapper");
+  const mainVideo = document.getElementById("mainVideo");
+  const mainSource = document.getElementById("mainSource");
+  const overlayVideo = document.getElementById("overlayVideo");
+  const overlaySource = document.getElementById("overlaySource");
+
+  videoTitle.textContent = title;
+  videoSpacer.className = "spacer " + spacerClass;
+  videoWrapper.setAttribute("data-aspect", aspect);
+
+  mainVideo.pause();
+  mainSource.src = src;
+  mainVideo.poster = poster;
+
+  // remove old captions
+  const oldTracks = mainVideo.querySelectorAll("track");
+  oldTracks.forEach(track => track.remove());
+
+  // add new captions if provided
+  if (vttFile) {
+    const track = document.createElement("track");
+    track.src = vttFile;
+    track.kind = "subtitles";
+    track.srclang = "en";
+    track.label = "English";
+    track.default = true;
+    mainVideo.appendChild(track);
+  }
+
+  // reload main video
+  mainVideo.load();
+
+  // force captions on if present
+  mainVideo.addEventListener("loadedmetadata", () => {
+    for (let i = 0; i < mainVideo.textTracks.length; i++) {
+      mainVideo.textTracks[i].mode = "showing";
+    }
+  }, { once: true });
+
+  // overlay logic (always load an overlay)
+  overlaySource.src = `https://archive.org/serve/1output-alpha/${overlayBase}_${aspect}.webm`;
+  overlayVideo.load();
+}
+
+// 🔊 set main video volume to 40% at page load
+window.addEventListener("DOMContentLoaded", () => {
+  const mainVideo = document.getElementById("mainVideo");
+  if (mainVideo) {
+    mainVideo.volume = 0.4;
+  }
+});
+</script>
+</body>
+</html>
