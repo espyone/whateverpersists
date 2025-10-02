@@ -14,23 +14,13 @@
       font-family: avenir, sans-serif;
       background-color: grey;
     }
-
-    main {
-      padding-top: 0;
-      max-width: 700px;
-      margin: 20px auto;
-    }
-
+    main { padding-top: 0; max-width: 700px; margin: 20px auto; }
     .pad { padding-bottom: 19.7px; }
     .padfoot { padding-bottom: 60px; }
 
     .spacer, .spacer2, .spacer3 {
-      position: relative;
-      z-index: 3;
-      top: 10px;
-      padding: 9.9px;
-      opacity: 1;
-      width: 97.5%;
+      position: relative; z-index: 3; top: 10px;
+      padding: 9.9px; opacity: 1; width: 97.5%;
       border-radius: 48% 48% 0 0;
     }
     .spacer  { background-color: purple; }
@@ -38,126 +28,53 @@
     .spacer3 { background-color: #7AC269; }
 
     .title {
-      width: 95%;
-      opacity: 1;
-      z-index: 4;
-      font-size: 140%;
-      font-family: 'Aldrich', sans-serif;
-      color: white;
-      position: relative;
-      top: 35px;
-      text-align: left;
-      text-shadow: 1px 1px red;
-    }
-    .title2 {
-      width: 95%;
-      opacity: 1;
-      z-index: 4;
-      font-size: 80%;
-      font-family: 'Aldrich', sans-serif;
-      color: white;
-      position: relative;
-      top: 35px;
-      text-align: left;
+      width: 95%; opacity: 1; z-index: 4;
+      font-size: 140%; font-family: 'Aldrich', sans-serif;
+      color: white; position: relative; top: 35px; text-align: left;
       text-shadow: 1px 1px red;
     }
 
-    .videoWrapper {
-      position: relative;
-      z-index: 2;
-      width: 100%;
-      background-color: #000;
-      overflow: hidden;
-    }
-
+    .videoWrapper { position: relative; z-index: 2; width: 100%; background-color: #000; overflow: hidden; }
     .videoWrapper[data-aspect="169"] { padding-top: 56.25%; }
     .videoWrapper[data-aspect="43"]  { padding-top: 75%; }
 
-    .videoIframe {
-      position: absolute;
-      top: 0; bottom: 0; left: 0; right: 0;
-      width: 100%; height: 100%;
-      background: transparent;
-      z-index: 1; /* main video */
-    }
+    .videoIframe { position: absolute; top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; background: transparent; z-index: 1; }
 
     .sticker {
-      position: absolute;
-      right: 9px;
-      top: 11px;
-      width: 84px;
-      height: auto;
-      opacity: .95;
+      position: absolute; right: 9px; top: 11px; width: 84px; height: auto; opacity: .95;
       transform: rotate(3deg) scale(1);
       transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
-      z-index: 2; /* above main video but below overlay */
+      z-index: 2;
     }
 
     @keyframes stickerLoop {
-      0%   { transform: rotate(3deg) scale(1); }
-      8.3% { transform: rotate(5deg) scale(1.05); }
-      16.6%{ transform: rotate(2deg) scale(1); }
-      25%  { transform: rotate(0deg) scale(0.95); }
-      33.3%{ transform: rotate(-2deg) scale(1); }
-      41.6%{ transform: rotate(-4deg) scale(1.05); }
-      50%  { transform: rotate(-2deg) scale(1); }
-      58.3%{ transform: rotate(0deg) scale(0.95); }
-      66.6%{ transform: rotate(2deg) scale(1); }
-      75%  { transform: rotate(4deg) scale(1.05); }
-      83.3%{ transform: rotate(2deg) scale(1); }
-      91.6%{ transform: rotate(0deg) scale(0.90); }
+      0% { transform: rotate(3deg) scale(1); }
       100% { transform: rotate(3deg) scale(1); }
     }
 
-    .sticker.playing {
-      animation-name: stickerLoop;
-      animation-iteration-count: infinite;
-      animation-timing-function: steps(12, end);
-      transition: none;
-    }
+    .sticker.playing { animation-name: stickerLoop; animation-iteration-count: infinite; animation-timing-function: steps(12, end); transition: none; }
 
-    #overlayVideo {
-      z-index: 4; /* always above sticker + main video */
-      pointer-events: none;
-    }
+    #overlayVideo { z-index: 4; pointer-events: none; }
 
-    .controls {
-      margin-top: 20px;
-      text-align: center;
-    }
+    .controls { margin-top: 20px; text-align: center; }
     .controls button {
-      margin: 5px;
-      padding: 10px 15px;
-      font-family: 'Aldrich', sans-serif;
-      background: #333;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
+      margin: 5px; padding: 10px 15px; font-family: 'Aldrich', sans-serif;
+      background: #333; color: white; border: none; cursor: pointer; border-radius: 5px;
     }
 
-    /* Global captions styling */
     video::cue {
-      font-size: 22px;
-      color: cyan;
-      background: transparent;
-      text-shadow: 2px 2px 4px black;
+      font-size: 22px; color: cyan; background: transparent; text-shadow: 2px 2px 4px black;
     }
   </style>
 </head>
 
 <body>
 <main>
-  <div class="container">
-    <div class="a">whatever persists</div>
-  </div>
-
-  <!-- ===================== MAIN PLAYER ===================== -->
   <section class="videoSection">
     <div id="videoTitle" class="title">EPMD - Richter Scale</div>
     <div id="videoSpacer" class="spacer spacer2"></div> 
     <div id="videoWrapper" class="videoWrapper" data-aspect="43">
-      <img class="sticker" src="./newindex_files/9hMDWSa.png" alt="Parental Advisory">
+      <img class="sticker" src="https://archive.org/serve/1output-alpha/9hMDWSa.png" alt="Parental Advisory">
 
       <video id="mainVideo" class="videoIframe" controls playsinline poster="https://i.imgur.com/TxicWJ9.jpeg">
         <source id="mainSource" src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4" type="video/mp4">
@@ -169,112 +86,82 @@
     </div>
   </section>
 
-  <!-- ===================== CONTROLS (Carousel) ===================== -->
   <div class="controls">
-     <button onclick="loadVideo(
+    <button onclick="loadVideo(
       'Ghostface Killah - Daytona 500',
       'spacer3',
       '43',
       'https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4',
-      './newindex_files/GFKINFO.jpg',
+      'https://archive.org/serve/1output-alpha/GFKINFO.jpg',
       null,
       '167782-837438539'
-    )">Ghostface KIllah - Daytona 500</button>
+    )">Ghostface Killah - Daytona 500</button>
 
     <button onclick="loadVideo(
       'Bone Crusher - Never Scared (Remix)',
       'spacer3',
       '43',
       'https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4',
-      './newindex_files/BCINFO.jpg',
+      'https://archive.org/serve/1output-alpha/BCINFO.jpg',
       null,
       '167782-837438539'
     )">Bone Crusher - Never Scared (Remix)</button>
 
-   <button onclick="loadVideo(
-  'Dead Prez - Hip Hop (vs Caswell Berry `Bag Of Suck` part)',
-  'spacer2',
-  '169',
-  'https://archive.org/serve/1output-alpha/Caswell%2BDP_Fix.mp4',
-  './newindex_files/DPINFO.jpg',
-  null,
-  '167782-837438539'
-)">Dead Prez - Hip Hop</button>
+    <button onclick="loadVideo(
+      'Dead Prez - Hip Hop (vs Caswell Berry `Bag Of Suck` part)',
+      'spacer2',
+      '169',
+      'https://archive.org/serve/1output-alpha/Caswell%2BDP_Fix.mp4',
+      'https://archive.org/serve/1output-alpha/DPINFO.jpg',
+      null,
+      '167782-837438539'
+    )">Dead Prez - Hip Hop</button>
 
     <button onclick="loadVideo(
       'Outkast - Elevators (Me & You)',
       'spacer3',
       '169',
       'https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4',
-      './newindex_files/OKINFO.jpg',
-      'http://whateverpersists.com/subtitles/outkast-elevators.vtt',
+      'https://archive.org/serve/1output-alpha/OKINFO.jpg',
+      'https://archive.org/serve/1output-alpha/outkast-elevators.vtt',
       '167782-837438539'
-    )">Outkast- Elevators</button>
+    )">Outkast - Elevators</button>
   </div>
 
   <div class="padfoot"></div>
 </main>
 
-<!-- jQuery -->
-<script src="./newindex_files/jquery-3.6.0.min.js"></script>
-
 <script>
-// Sticker animation control
-document.querySelectorAll('video').forEach(function(video) {
+const overlay = document.getElementById('overlayVideo');
+
+// --- Sticker animation ---
+document.querySelectorAll('video').forEach(video => {
   const sticker = video.closest('.videoWrapper')?.querySelector('.sticker');
   if (!sticker) return;
   function setRandomDuration() {
     const randomTime = (Math.random() * 2 + 2).toFixed(2);
     sticker.style.animationDuration = randomTime + "s";
   }
-  video.addEventListener('play', function() {
-    sticker.classList.add('playing');
-    setRandomDuration();
-  });
-  video.addEventListener('pause', function() {
-    sticker.classList.remove('playing');
-    sticker.style.animationDuration = "";
-  });
-  video.addEventListener('ended', function() {
-    sticker.classList.remove('playing');
-    sticker.style.animationDuration = "";
-  });
-  sticker.addEventListener('animationiteration', function() {
-    if (sticker.classList.contains('playing')) setRandomDuration();
-  });
+  video.addEventListener('play', () => { sticker.classList.add('playing'); setRandomDuration(); });
+  video.addEventListener('pause', () => { sticker.classList.remove('playing'); sticker.style.animationDuration = ""; });
+  video.addEventListener('ended', () => { sticker.classList.remove('playing'); sticker.style.animationDuration = ""; });
+  sticker.addEventListener('animationiteration', () => { if (sticker.classList.contains('playing')) setRandomDuration(); });
 });
 
-const main = document.getElementById('mainVideo');
-const overlay = document.getElementById('overlayVideo');
-
-// === RANDOM START + RANDOM SPEED ===
+// --- Overlay randomization ---
 function randomizeOverlay() {
-  if (overlay.duration) {
-    const randomTime = Math.random() * overlay.duration;
-    overlay.currentTime = randomTime;
-  }
+  if (overlay.duration) overlay.currentTime = Math.random() * overlay.duration;
   overlay.playbackRate = (Math.random() * 1.5 + 0.5).toFixed(2);
 }
+overlay.addEventListener("loadedmetadata", randomizeOverlay);
+overlay.addEventListener("ended", () => { randomizeOverlay(); overlay.play(); });
 
-overlay.addEventListener("loadedmetadata", () => {
-  randomizeOverlay();
-});
-overlay.addEventListener("ended", () => {
-  randomizeOverlay();
-  overlay.play();
-});
-main.addEventListener("play", () => {
-  randomizeOverlay();
-  overlay.play();
-});
+const main = document.getElementById('mainVideo');
+main.addEventListener("play", () => { randomizeOverlay(); overlay.play(); });
 main.addEventListener("pause", () => overlay.pause());
-main.addEventListener("seeking", () => {
-  if (overlay.duration) {
-    overlay.currentTime = main.currentTime % overlay.duration;
-  }
-});
+main.addEventListener("seeking", () => { if (overlay.duration) overlay.currentTime = main.currentTime % overlay.duration; });
 
-// Carousel loader with captions + overlay
+// --- Video loader with captions ---
 function loadVideo(title, spacerClass, aspect, src, poster, vttFile, overlayBase) {
   const videoTitle = document.getElementById("videoTitle");
   const videoSpacer = document.getElementById("videoSpacer");
@@ -290,6 +177,8 @@ function loadVideo(title, spacerClass, aspect, src, poster, vttFile, overlayBase
 
   mainVideo.pause();
   mainSource.src = src;
+
+  // set poster and enforce it before & after load
   mainVideo.poster = poster;
 
   // remove old captions
@@ -298,6 +187,7 @@ function loadVideo(title, spacerClass, aspect, src, poster, vttFile, overlayBase
 
   // add new captions if provided
   if (vttFile) {
+    console.log("Adding VTT:", vttFile);
     const track = document.createElement("track");
     track.src = vttFile;
     track.kind = "subtitles";
@@ -305,40 +195,32 @@ function loadVideo(title, spacerClass, aspect, src, poster, vttFile, overlayBase
     track.label = "English";
     track.default = true;
     mainVideo.appendChild(track);
+
+    mainVideo.addEventListener("loadedmetadata", () => {
+      console.log("Video metadata loaded. Tracks:", mainVideo.textTracks.length);
+      for (let i = 0; i < mainVideo.textTracks.length; i++) {
+        mainVideo.textTracks[i].mode = "showing";
+        console.log("Track", i, "forced to showing.");
+      }
+    }, { once: true });
   }
 
-  // reload main video
+  // reload video
   mainVideo.load();
 
-  // force captions on if present
-  mainVideo.addEventListener("loadedmetadata", () => {
-    for (let i = 0; i < mainVideo.textTracks.length; i++) {
-      mainVideo.textTracks[i].mode = "showing";
-    }
+  // ensure poster persists until play
+  mainVideo.addEventListener("loadeddata", () => {
+    mainVideo.poster = poster;
+    console.log("Poster reapplied:", poster);
   }, { once: true });
 
-  // overlay logic (always load an overlay)
+  // overlay logic
   overlaySource.src = `https://archive.org/serve/1output-alpha/${overlayBase}_${aspect}.webm`;
   overlayVideo.load();
 }
 
-// 🔊 set main video volume to 40% at page load
-window.addEventListener("DOMContentLoaded", () => {
-  const mainVideo = document.getElementById("mainVideo");
-  if (mainVideo) {
-    mainVideo.volume = 0.4;
-  }
-});
+// set main video volume
+window.addEventListener("DOMContentLoaded", () => { main.volume = 0.4; });
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
