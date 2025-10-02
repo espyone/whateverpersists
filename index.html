@@ -177,41 +177,32 @@ function loadVideo(title, spacerClass, aspect, src, poster, vttFile, overlayBase
 
   mainVideo.pause();
   mainSource.src = src;
-
-  // set poster and enforce it before & after load
   mainVideo.poster = poster;
 
   // remove old captions
   const oldTracks = mainVideo.querySelectorAll("track");
   oldTracks.forEach(track => track.remove());
 
-  // add new captions if provided
+  // add captions BEFORE load so browser parses them
   if (vttFile) {
-    console.log("Adding VTT:", vttFile);
     const track = document.createElement("track");
-    track.src = vttFile;
+    track.src = vttFile + "?t=" + Date.now(); // force reload
     track.kind = "subtitles";
     track.srclang = "en";
     track.label = "English";
     track.default = true;
     mainVideo.appendChild(track);
-
-    mainVideo.addEventListener("loadedmetadata", () => {
-      console.log("Video metadata loaded. Tracks:", mainVideo.textTracks.length);
-      for (let i = 0; i < mainVideo.textTracks.length; i++) {
-        mainVideo.textTracks[i].mode = "showing";
-        console.log("Track", i, "forced to showing.");
-      }
-    }, { once: true });
   }
 
   // reload video
   mainVideo.load();
 
-  // ensure poster persists until play
-  mainVideo.addEventListener("loadeddata", () => {
-    mainVideo.poster = poster;
-    console.log("Poster reapplied:", poster);
+  // force captions showing once metadata ready
+  mainVideo.addEventListener("loadedmetadata", () => {
+    for (let i = 0; i < mainVideo.textTracks.length; i++) {
+      mainVideo.textTracks[i].mode = "showing";
+    }
+    console.log("Captions forced showing:", mainVideo.textTracks.length);
   }, { once: true });
 
   // overlay logic
