@@ -8,61 +8,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Fredoka+One&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      font-family: avenir, sans-serif;
-      background-color: #fff;
-      margin: 0;
-    }
+    body { font-family: avenir, sans-serif; background-color: #fff; margin: 0; }
 
-    /* Main video container area (80% width, left side only) */
-    main {
-      margin-top: 30px;
-      margin-left: 10px;
-      width: 80%;               /* only use left 80% for video */
-      display: flex;
-      justify-content: center;  /* center video inside this zone */
-    }
+    main { margin-top: 30px; margin-left: 10px; width: 80%; display: flex; justify-content: center; }
+    .videoSection { width: 720px; flex: 0 0 720px; position: relative; }
 
-    .videoSection {
-      width: 720px;             /* fixed width for player */
-      flex: 0 0 720px;
-      position: relative;
-    }
-
-    /* Buttons fixed on the right 20% */
+    /* Side button box */
     .controls {
-      position: fixed;
-      top: 30px;
-      right: 10px;
-      width: 20%;               /* always occupies right 20% */
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 10;
+      position: fixed; top: 30px; right: 10px; width: 20%;
+      display: flex; flex-direction: column; gap: 10px; z-index: 10;
     }
     .controls button {
-      padding: 10px 12px;
-      font-family: 'Aldrich', sans-serif;
-      font-size: 14px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      background: #333;
-      color: white;
-      transition: background 0.2s;
-      text-align: left;
+      padding: 10px 12px; font-family: 'Aldrich', sans-serif; font-size: 14px;
+      border: none; border-radius: 4px; cursor: pointer;
+      background: #333; color: white; transition: background 0.2s; text-align: left;
     }
-    .controls button:hover {
-      background: red;
-    }
+    .controls button:hover { background: red; }
 
-    /* Spacer colors */
-    .spacer, .spacer2, .spacer3 {
+    .spacer,.spacer2,.spacer3 {
       position: relative; z-index: 3; top: 10px;
       padding: 9.9px; opacity: 1; width: 97.5%;
       border-radius: 48% 48% 0 0;
     }
-    .spacer  { background-color: purple; }
+    .spacer { background-color: purple; }
     .spacer2 { background-color: blue; }
     .spacer3 { background-color: #7AC269; }
 
@@ -73,49 +41,44 @@
       text-shadow: 1px 1px yellow;
     }
 
-    /* Video wrapper aspect ratios */
-    .videoWrapper {
-      position: relative;
-      width: 100%;
-      background: black;
-      overflow: hidden;
-    }
-    .videoWrapper[data-aspect="169"] { padding-top: 56.25%; } /* 16:9 */
-    .videoWrapper[data-aspect="43"]  { padding-top: 75%; }    /* 4:3 */
+    .videoWrapper { position: relative; width: 100%; background: black; overflow: hidden; }
+    .videoWrapper[data-aspect="169"] { padding-top: 56.25%; }
+    .videoWrapper[data-aspect="43"]  { padding-top: 75%; }
 
     .videoIframe {
       position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: black;
+      width: 100%; height: 100%; background: black;
     }
 
     .sticker {
-  position: absolute; 
-  right: 2px; 
-  top: 11px; 
-  width: 84px;
-  opacity: .95; 
-  transform: rotate(3deg) scale(1);
-  transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55);
-  z-index: 2;
-}
+      position: absolute; right: 2px; top: 11px; width: 84px;
+      opacity: .95; transform: rotate(3deg) scale(1);
+      transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55); z-index: 2;
+    }
 
-    /* --- YouTube-style Controls --- */
+    /* Big Play Overlay (triangle only) */
+    .big-play {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 6; transition: opacity 0.3s;
+    }
+    .big-play.hidden { opacity: 0; pointer-events: none; }
+    .big-play svg {
+      fill: white; opacity: 0.95; width: 80px; height: 80px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); transition: transform 0.2s;
+    }
+    .big-play:hover svg { transform: scale(1.1); }
+
+    /* YouTube-style controls */
     .yt-controls {
       position: absolute; bottom: 0; left: 0; right: 0;
       background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
-      padding: 6px;
-      display: flex; align-items: center; gap: 10px;
-      opacity: 0; transition: opacity 0.3s;
-      z-index: 5;
+      padding: 6px; display: flex; align-items: center; gap: 10px;
+      opacity: 0; transition: opacity 0.3s; z-index: 5;
     }
     .videoWrapper:hover .yt-controls { opacity: 1; }
 
-    .yt-button {
-      background: none; border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      padding: 4px;
-    }
+    .yt-button { background: none; border: none; cursor: pointer; padding: 4px; }
     .yt-button svg { pointer-events: none; }
 
     .yt-progress {
@@ -123,60 +86,33 @@
       cursor: pointer; position: relative;
     }
     .yt-progress-fill {
-      position: absolute; top: 0; left: 0;
-      height: 100%; width: 0;
+      position: absolute; top: 0; left: 0; height: 100%; width: 0;
       background: red; border-radius: 2px;
     }
     .yt-progress-handle {
-      position: absolute; top: -4px; left: 0;
-      width: 12px; height: 12px;
-      background: red; border-radius: 50%;
-      transform: translateX(-50%);
+      position: absolute; top: -4px; left: 0; width: 12px; height: 12px;
+      background: red; border-radius: 50%; transform: translateX(-50%);
       pointer-events: none;
     }
 
     .yt-time { font-size: 12px; min-width: 80px; }
 
-    /* --- Custom red volume slider --- */
     .yt-volume {
-      width: 70px;
-      -webkit-appearance: none;
-      appearance: none;
-      background: transparent;
+      width: 70px; -webkit-appearance: none; appearance: none; background: transparent;
     }
     .yt-volume:focus { outline: none; }
-
     .yt-volume::-webkit-slider-runnable-track {
-      height: 4px;
-      border-radius: 2px;
+      height: 4px; border-radius: 2px;
       background: linear-gradient(to right, red var(--val, 40%), #ccc var(--val, 40%));
     }
-    .yt-volume::-moz-range-track {
-      height: 4px;
-      background: #ccc;
-      border-radius: 2px;
-    }
-    .yt-volume::-moz-range-progress {
-      height: 4px;
-      background: red;
-      border-radius: 2px;
-    }
-
+    .yt-volume::-moz-range-track { height: 4px; background: #ccc; border-radius: 2px; }
+    .yt-volume::-moz-range-progress { height: 4px; background: red; border-radius: 2px; }
     .yt-volume::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: red;
-      margin-top: -4px;
-      cursor: pointer;
+      -webkit-appearance: none; width: 12px; height: 12px;
+      border-radius: 50%; background: red; margin-top: -4px; cursor: pointer;
     }
     .yt-volume::-moz-range-thumb {
-      width: 12px; height: 12px;
-      border-radius: 50%;
-      background: red;
-      border: none;
-      cursor: pointer;
+      width: 12px; height: 12px; border-radius: 50%; background: red; border: none; cursor: pointer;
     }
   </style>
 </head>
@@ -195,7 +131,12 @@
         <source id="mainSource" src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4" type="video/mp4">
       </video>
 
-      <!-- Custom YouTube-like Controls -->
+      <!-- Big Play Overlay -->
+      <div id="bigPlayOverlay" class="big-play">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+      </div>
+
+      <!-- Custom Controls -->
       <div class="yt-controls">
         <button id="playBtn" class="yt-button"></button>
         <div class="yt-progress" id="progressBar">
@@ -210,190 +151,97 @@
   </section>
 </main>
 
-<!-- Side button panel -->
+<!-- Side Button Panel -->
 <div class="controls">
-  <button onclick="loadVideo(
-    'Ghostface Killah - Daytona 500','spacer','43',
-    'https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4',
-    'https://archive.org/serve/1output-alpha/GFKINFO.jpg',null)">Ghostface Killah featuring Raekwon, Cappadonna and The Force MDs - Daytona 500</button>
-
-  <button onclick="loadVideo(
-    'Bone Crusher - Never Scared (The Takeover Remix)','spacer2','43',
-    'https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4',
-    'https://ia801007.us.archive.org/3/items/1output-alpha/BCINFO.jpg',null)">Bone Crusher featuring Cam'Ron, Jadakiss and Busta Rhymes  - Never Scared (The Takeover Remix)</button>
-
-  <button onclick="loadVideo(
-    'Keith Murray - Incredible','spacer3','169',
-    'https://archive.org/download/1output-alpha/Keith%20Murray%20featuring%20LL%20Cool%20J%20-%20Incredible.mp4',
-    'https://archive.org/serve/1output-alpha/KMINFO.jpg',null)">Keith Murray featuring LL Cool J - Incredible</button>
-
-  <button onclick="loadVideo(
-    'Outkast - Elevators (Me & You)','spacer','169',
-    'https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4',
-    'https://archive.org/serve/1output-alpha/OKCOVER.jpg',
-    './subtitles/outkast-elevators.vtt')">Outkast - Elevators (Me & You)</button>
-	
-	<button onclick="loadVideo(
-    'EPMD - Richter Scale','spacer2','43',
-    'https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.ia.mp4',
-    'https://archive.org/serve/1output-alpha/EPMDINFO.jpg',
-    null)">EPMD - Richter Scale</button>
+  <button onclick="loadVideo('Ghostface Killah - Daytona 500','spacer','43','https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4','https://archive.org/serve/1output-alpha/GFKINFO.jpg',null)">Ghostface Killah – Daytona 500</button>
+  <button onclick="loadVideo('Bone Crusher - Never Scared (Remix)','spacer2','43','https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4','https://ia801007.us.archive.org/3/items/1output-alpha/BCINFO.jpg',null)">Bone Crusher – Never Scared (Remix)</button>
+  <button onclick="loadVideo('Keith Murray - Incredible','spacer3','169','https://archive.org/download/1output-alpha/Keith%20Murray%20featuring%20LL%20Cool%20J%20-%20Incredible.mp4','https://archive.org/serve/1output-alpha/KMINFO.jpg',null)">Keith Murray – Incredible</button>
+  <button onclick="loadVideo('Outkast - Elevators (Me & You)','spacer','169','https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4','https://archive.org/serve/1output-alpha/OKCOVER.jpg','./subtitles/outkast-elevators.vtt')">Outkast – Elevators</button>
+  <button onclick="loadVideo('EPMD - Richter Scale','spacer2','43','https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.ia.mp4','https://archive.org/serve/1output-alpha/EPMDINFO.jpg',null)">EPMD – Richter Scale</button>
+  <button onclick="loadVideo('Mystikal - Yall Ain’t Ready Yet','spacer3','43','https://archive.org/serve/mystikal-yall-aint-ready-yet/Mystikal%20-%20Y%27all%20Ain%27t%20Ready%20Yet%20%5B%5D.mp4','https://archive.org/serve/1output-alpha/MINFO.jpg',null)">Mystikal – Yall Ain’t Ready Yet</button>
 </div>
 
 <script>
-// --- SVG Icons ---
-const playIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="white">
-  <path d="M8 5v14l11-7z"></path>
-</svg>`;
-const pauseIcon = `<svg viewBox="0 0 24 24" width="24" height="24" fill="white">
-  <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path>
-</svg>`;
+const playIcon=`<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M8 5v14l11-7z"/></svg>`;
+const pauseIcon=`<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
 
-// --- DOM refs
-const mainVideo = document.getElementById("mainVideo");
-const playBtn = document.getElementById("playBtn");
-const progressBar = document.getElementById("progressBar");
-const progressFill = document.getElementById("progressFill");
-const progressHandle = document.getElementById("progressHandle");
-const timeDisplay = document.getElementById("timeDisplay");
-const volumeControl = document.getElementById("volumeControl");
-const fsBtn = document.getElementById("fsBtn");
+const mainVideo=document.getElementById("mainVideo");
+const playBtn=document.getElementById("playBtn");
+const progressFill=document.getElementById("progressFill");
+const progressHandle=document.getElementById("progressHandle");
+const timeDisplay=document.getElementById("timeDisplay");
+const volumeControl=document.getElementById("volumeControl");
+const fsBtn=document.getElementById("fsBtn");
+const progressBar=document.getElementById("progressBar");
+const bigPlayOverlay=document.getElementById("bigPlayOverlay");
 
-// set initial button
-playBtn.innerHTML = playIcon;
+playBtn.innerHTML=playIcon;
 
-// --- Play/pause button
-playBtn.addEventListener("click", () => {
-  if (mainVideo.paused) {
-    mainVideo.play();
-    playBtn.innerHTML = pauseIcon;
-  } else {
-    mainVideo.pause();
-    playBtn.innerHTML = playIcon;
-  }
+// Overlay click
+bigPlayOverlay.addEventListener("click",()=>{mainVideo.play();});
+
+// Show/hide overlay
+mainVideo.addEventListener("play",()=>{bigPlayOverlay.classList.add("hidden");playBtn.innerHTML=pauseIcon;});
+mainVideo.addEventListener("pause",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
+mainVideo.addEventListener("ended",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
+
+// Play button
+playBtn.addEventListener("click",()=>{if(mainVideo.paused){mainVideo.play();}else{mainVideo.pause();}});
+
+// Progress
+mainVideo.addEventListener("timeupdate",()=>{
+  if(!mainVideo.duration)return;
+  const percent=(mainVideo.currentTime/mainVideo.duration)*100;
+  progressFill.style.width=percent+"%";
+  progressHandle.style.left=percent+"%";
+  timeDisplay.textContent=formatTime(mainVideo.currentTime)+" / "+formatTime(mainVideo.duration);
+});
+function formatTime(s){const m=Math.floor(s/60)||0;const sec=Math.floor(s%60)||0;return m+":"+(sec<10?"0"+sec:sec);}
+
+progressBar.addEventListener("click",e=>{
+  const r=progressBar.getBoundingClientRect();
+  const pos=(e.clientX-r.left)/r.width;
+  mainVideo.currentTime=pos*mainVideo.duration;
 });
 
-// --- Reset icon when video ends
-mainVideo.addEventListener("ended", () => {
-  playBtn.innerHTML = playIcon;
-});
+// Volume
+function updateVol(){volumeControl.style.setProperty("--val",(volumeControl.value*100)+"%");}
+volumeControl.addEventListener("input",()=>{mainVideo.volume=volumeControl.value;updateVol();});
+updateVol();
 
-// --- Progress updates
-mainVideo.addEventListener("timeupdate", () => {
-  if (!mainVideo.duration) return;
-  const percent = (mainVideo.currentTime / mainVideo.duration) * 100;
-  progressFill.style.width = percent + "%";
-  progressHandle.style.left = percent + "%";
-  timeDisplay.textContent = formatTime(mainVideo.currentTime) + " / " + formatTime(mainVideo.duration);
-});
-function formatTime(seconds) {
-  const m = Math.floor(seconds / 60) || 0;
-  const s = Math.floor(seconds % 60) || 0;
-  return m + ":" + (s < 10 ? "0" + s : s);
+// Fullscreen
+fsBtn.addEventListener("click",()=>{if(document.fullscreenElement){document.exitFullscreen();}else{mainVideo.requestFullscreen?.();}});
+
+// Loader
+function loadVideo(title,spacerClass,aspect,src,poster,vttFile){
+  document.getElementById("videoTitle").textContent=title;
+  document.getElementById("videoSpacer").className="spacer "+spacerClass;
+  document.getElementById("videoWrapper").setAttribute("data-aspect",aspect);
+  const mainSource=document.getElementById("mainSource");
+  mainVideo.pause();mainSource.src=src;mainVideo.poster=poster;
+  playBtn.innerHTML=playIcon;
+  const oldTracks=mainVideo.querySelectorAll("track");oldTracks.forEach(t=>t.remove());
+  if(vttFile){const track=document.createElement("track");track.src=vttFile+"?t="+Date.now();track.kind="subtitles";track.srclang="en";track.label="English";track.default=true;mainVideo.appendChild(track);}
+  mainVideo.load();
+  mainVideo.addEventListener("loadedmetadata",()=>{for(let i=0;i<mainVideo.textTracks.length;i++){mainVideo.textTracks[i].mode="showing";}}, {once:true});
+  bigPlayOverlay.classList.remove("hidden");
 }
-
-// --- Seek
-progressBar.addEventListener("click", e => {
-  const rect = progressBar.getBoundingClientRect();
-  const pos = (e.clientX - rect.left) / rect.width;
-  mainVideo.currentTime = pos * mainVideo.duration;
-});
-
-// --- Volume with red fill update
-function updateVolumeColor() {
-  volumeControl.style.setProperty("--val", (volumeControl.value * 100) + "%");
-}
-volumeControl.addEventListener("input", () => {
-  mainVideo.volume = volumeControl.value;
-  updateVolumeColor();
-});
-updateVolumeColor();
-
-// --- Fullscreen
-fsBtn.addEventListener("click", () => {
-  if (document.fullscreenElement) { document.exitFullscreen(); }
-  else { mainVideo.requestFullscreen?.(); }
-});
 
 // --- Hotkeys like YouTube ---
-document.addEventListener("keydown", (e) => {
-  if (["INPUT","TEXTAREA"].includes(e.target.tagName)) return;
-
-  switch (e.key.toLowerCase()) {
-    case " ": case "k":
-      e.preventDefault();
-      playBtn.click();
-      break;
-    case "j":
-      mainVideo.currentTime = Math.max(0, mainVideo.currentTime - 10);
-      break;
-    case "l":
-      mainVideo.currentTime = Math.min(mainVideo.duration, mainVideo.currentTime + 10);
-      break;
-    case "arrowleft":
-      mainVideo.currentTime = Math.max(0, mainVideo.currentTime - 5);
-      break;
-    case "arrowright":
-      mainVideo.currentTime = Math.min(mainVideo.duration, mainVideo.currentTime + 5);
-      break;
-    case "m":
-      mainVideo.muted = !mainVideo.muted;
-      break;
-    case "f":
-      fsBtn.click();
-      break;
-    case "arrowup":
-      e.preventDefault();
-      mainVideo.volume = Math.min(1, mainVideo.volume + 0.05);
-      volumeControl.value = mainVideo.volume;
-      updateVolumeColor();
-      break;
-    case "arrowdown":
-      e.preventDefault();
-      mainVideo.volume = Math.max(0, mainVideo.volume - 0.05);
-      volumeControl.value = mainVideo.volume;
-      updateVolumeColor();
-      break;
+document.addEventListener("keydown",(e)=>{
+  if(["INPUT","TEXTAREA"].includes(e.target.tagName)) return;
+  switch(e.key.toLowerCase()){
+    case " ": case "k": e.preventDefault(); playBtn.click(); break;
+    case "j": mainVideo.currentTime=Math.max(0,mainVideo.currentTime-10); break;
+    case "l": mainVideo.currentTime=Math.min(mainVideo.duration,mainVideo.currentTime+10); break;
+    case "arrowleft": mainVideo.currentTime=Math.max(0,mainVideo.currentTime-5); break;
+    case "arrowright": mainVideo.currentTime=Math.min(mainVideo.duration,mainVideo.currentTime+5); break;
+    case "m": mainVideo.muted=!mainVideo.muted; break;
+    case "f": fsBtn.click(); break;
+    case "arrowup": e.preventDefault(); mainVideo.volume=Math.min(1,mainVideo.volume+0.05); volumeControl.value=mainVideo.volume; updateVol(); break;
+    case "arrowdown": e.preventDefault(); mainVideo.volume=Math.max(0,mainVideo.volume-0.05); volumeControl.value=mainVideo.volume; updateVol(); break;
   }
 });
-
-// --- Loader ---
-function loadVideo(title, spacerClass, aspect, src, poster, vttFile) {
-  const videoTitle = document.getElementById("videoTitle");
-  const videoSpacer = document.getElementById("videoSpacer");
-  const videoWrapper = document.getElementById("videoWrapper");
-  const mainSource = document.getElementById("mainSource");
-
-  videoTitle.textContent = title;
-  videoSpacer.className = "spacer " + spacerClass;
-  videoWrapper.setAttribute("data-aspect", aspect);
-
-  mainVideo.pause();
-  mainSource.src = src;
-  mainVideo.poster = poster;
-
-  playBtn.innerHTML = playIcon;
-
-  const oldTracks = mainVideo.querySelectorAll("track");
-  oldTracks.forEach(track => track.remove());
-
-  if (vttFile) {
-    const track = document.createElement("track");
-    track.src = vttFile + "?t=" + Date.now();
-    track.kind = "subtitles";
-    track.srclang = "en";
-    track.label = "English";
-    track.default = true;
-    mainVideo.appendChild(track);
-  }
-
-  mainVideo.load();
-  mainVideo.addEventListener("loadedmetadata", () => {
-    for (let i = 0; i < mainVideo.textTracks.length; i++) {
-      mainVideo.textTracks[i].mode = "showing";
-    }
-  }, { once: true });
-}
 </script>
 </body>
 </html>
