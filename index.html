@@ -95,7 +95,7 @@
       pointer-events: none;
     }
 
-    .yt-time { font-size: 12px; min-width: 80px; }
+    .yt-time { font-size: 22px; min-width: 60px; color: white;}
 
     .yt-volume {
       width: 70px; -webkit-appearance: none; appearance: none; background: transparent;
@@ -241,6 +241,22 @@ document.addEventListener("keydown",(e)=>{
     case "arrowup": e.preventDefault(); mainVideo.volume=Math.min(1,mainVideo.volume+0.05); volumeControl.value=mainVideo.volume; updateVol(); break;
     case "arrowdown": e.preventDefault(); mainVideo.volume=Math.max(0,mainVideo.volume-0.05); volumeControl.value=mainVideo.volume; updateVol(); break;
   }
+});
+
+// --- Alphabetical Sort + Random Video on Page Load ---
+window.addEventListener("DOMContentLoaded", () => {
+  const controls = document.querySelector(".controls");
+  const buttons = Array.from(controls.querySelectorAll("button"));
+
+  // Sort alphabetically (case-insensitive)
+  buttons.sort((a, b) => a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase()));
+
+  // Re-append in sorted order
+  buttons.forEach(btn => controls.appendChild(btn));
+
+  // Pick one at random
+  const randomBtn = buttons[Math.floor(Math.random() * buttons.length)];
+  randomBtn.click();
 });
 </script>
 </body>
