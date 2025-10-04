@@ -56,7 +56,6 @@
       transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55); z-index: 2;
     }
 
-    /* Big Play Overlay (triangle only) */
     .big-play {
       position: absolute; inset: 0;
       display: flex; align-items: center; justify-content: center;
@@ -69,7 +68,6 @@
     }
     .big-play:hover svg { transform: scale(1.1); }
 
-    /* YouTube-style controls */
     .yt-controls {
       position: absolute; bottom: 0; left: 0; right: 0;
       background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
@@ -95,7 +93,7 @@
       pointer-events: none;
     }
 
-    .yt-time { font-size: 22px; min-width: 60px; color: white;}
+    .yt-time { font-size: 22px; min-width: 60px; color: white; }
 
     .yt-volume {
       width: 70px; -webkit-appearance: none; appearance: none; background: transparent;
@@ -126,17 +124,14 @@
 
       <img class="sticker" src="https://archive.org/serve/1output-alpha/9hMDWSa.png" alt="Parental Advisory">
 
-      <!-- Main video -->
       <video id="mainVideo" class="videoIframe" playsinline poster="https://i.imgur.com/TxicWJ9.jpeg">
         <source id="mainSource" src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4" type="video/mp4">
       </video>
 
-      <!-- Big Play Overlay -->
       <div id="bigPlayOverlay" class="big-play">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
       </div>
 
-      <!-- Custom Controls -->
       <div class="yt-controls">
         <button id="playBtn" class="yt-button"></button>
         <div class="yt-progress" id="progressBar">
@@ -151,14 +146,52 @@
   </section>
 </main>
 
-<!-- Side Button Panel -->
 <div class="controls">
-  <button onclick="loadVideo('Ghostface Killah - Daytona 500','spacer','43','https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4','https://archive.org/serve/1output-alpha/GFKINFO.jpg',null)">Ghostface Killah – Daytona 500</button>
-  <button onclick="loadVideo('Bone Crusher - Never Scared (Remix)','spacer2','43','https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4','https://ia801007.us.archive.org/3/items/1output-alpha/BCINFO.jpg',null)">Bone Crusher – Never Scared (Remix)</button>
-  <button onclick="loadVideo('Keith Murray - Incredible','spacer3','169','https://archive.org/download/1output-alpha/Keith%20Murray%20featuring%20LL%20Cool%20J%20-%20Incredible.mp4','https://archive.org/serve/1output-alpha/KMINFO.jpg',null)">Keith Murray – Incredible</button>
-  <button onclick="loadVideo('Outkast - Elevators (Me & You)','spacer','169','https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4','https://archive.org/serve/1output-alpha/OKCOVER.jpg','./subtitles/outkast-elevators.vtt')">Outkast – Elevators</button>
-  <button onclick="loadVideo('EPMD - Richter Scale','spacer2','43','https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.ia.mp4','https://archive.org/serve/1output-alpha/EPMDINFO.jpg',null)">EPMD – Richter Scale</button>
-  <button onclick="loadVideo('Mystikal - Yall Ain’t Ready Yet','spacer3','43','https://archive.org/serve/mystikal-yall-aint-ready-yet/Mystikal%20-%20Y%27all%20Ain%27t%20Ready%20Yet%20%5B%5D.mp4','https://archive.org/serve/1output-alpha/MINFO.jpg',null)">Mystikal – Yall Ain’t Ready Yet</button>
+  <button data-spacer="spacer" data-aspect="43"
+    data-src="https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4"
+    data-poster="https://archive.org/serve/1output-alpha/GFKINFO.jpg"
+    data-title-extra="f/ Raekwon, Cappadonna & The Force MDs">
+    Ghostface Killah – Daytona 500
+  </button>
+
+  <button data-spacer="spacer2" data-aspect="43"
+    data-src="https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4"
+    data-poster="https://ia801007.us.archive.org/3/items/1output-alpha/BCINFO.jpg"
+    data-title-extra="f/ Cam'Ron, Jadakiss & Busta Rhymes">
+    Bone Crusher – Never Scared (The Takeover Remix)
+  </button>
+
+  <button data-spacer="spacer3" data-aspect="169"
+    data-src="https://archive.org/download/1output-alpha/Keith%20Murray%20featuring%20LL%20Cool%20J%20-%20Incredible.mp4"
+    data-poster="https://archive.org/serve/1output-alpha/KMINFO.jpg"
+    data-title-extra="ft. LL Cool J">
+    Keith Murray – Incredible
+  </button>
+
+  <button data-spacer="spacer" data-aspect="169"
+    data-src="https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4"
+    data-poster="https://archive.org/serve/1output-alpha/OKCOVER.jpg"
+    data-vtt="./subtitles/outkast-elevators.vtt">
+    Outkast – Elevators (Me & You)
+  </button>
+
+  <button data-spacer="spacer2" data-aspect="43"
+    data-src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.ia.mp4"
+    data-poster="https://archive.org/serve/1output-alpha/EPMDINFO.jpg">
+    EPMD – Richter Scale
+  </button>
+
+  <button data-spacer="spacer3" data-aspect="43"
+    data-src="https://archive.org/serve/mystikal-yall-aint-ready-yet/Mystikal%20-%20Y%27all%20Ain%27t%20Ready%20Yet%20%5B%5D.mp4"
+    data-poster="https://archive.org/serve/1output-alpha/MINFO.jpg">
+    Mystikal – Yall Ain’t Ready Yet
+  </button>
+
+  <button data-spacer="spacer" data-aspect="169"
+    data-src="https://archive.org/serve/beastie-boys-awesome-i-fuckin-shot-that/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21.mp4"
+    data-poster="https://archive.org/download/beastie-boys-awesome-i-fuckin-shot-that/beastie-boys-awesome-i-fuckin-shot-that.thumbs/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21_000310.jpg">
+    Beastie Boys – Awesome; I Fuckin' Shot That!
+  </button>
 </div>
 
 <script>
@@ -177,18 +210,13 @@ const bigPlayOverlay=document.getElementById("bigPlayOverlay");
 
 playBtn.innerHTML=playIcon;
 
-// Overlay click
 bigPlayOverlay.addEventListener("click",()=>{mainVideo.play();});
-
-// Show/hide overlay
 mainVideo.addEventListener("play",()=>{bigPlayOverlay.classList.add("hidden");playBtn.innerHTML=pauseIcon;});
 mainVideo.addEventListener("pause",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
 mainVideo.addEventListener("ended",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
 
-// Play button
 playBtn.addEventListener("click",()=>{if(mainVideo.paused){mainVideo.play();}else{mainVideo.pause();}});
 
-// Progress
 mainVideo.addEventListener("timeupdate",()=>{
   if(!mainVideo.duration)return;
   const percent=(mainVideo.currentTime/mainVideo.duration)*100;
@@ -204,59 +232,68 @@ progressBar.addEventListener("click",e=>{
   mainVideo.currentTime=pos*mainVideo.duration;
 });
 
-// Volume
 function updateVol(){volumeControl.style.setProperty("--val",(volumeControl.value*100)+"%");}
 volumeControl.addEventListener("input",()=>{mainVideo.volume=volumeControl.value;updateVol();});
 updateVol();
 
-// Fullscreen
 fsBtn.addEventListener("click",()=>{if(document.fullscreenElement){document.exitFullscreen();}else{mainVideo.requestFullscreen?.();}});
 
-// Loader
+function adjustTitleSize(titleElement){
+  const text=titleElement.textContent.trim();
+  titleElement.style.fontSize=(text.length>50)?"90%":"140%";
+}
+
 function loadVideo(title,spacerClass,aspect,src,poster,vttFile){
-  document.getElementById("videoTitle").textContent=title;
+  const titleEl=document.getElementById("videoTitle");
+  titleEl.textContent=title;
+  adjustTitleSize(titleEl);
   document.getElementById("videoSpacer").className="spacer "+spacerClass;
   document.getElementById("videoWrapper").setAttribute("data-aspect",aspect);
   const mainSource=document.getElementById("mainSource");
   mainVideo.pause();mainSource.src=src;mainVideo.poster=poster;
   playBtn.innerHTML=playIcon;
-  const oldTracks=mainVideo.querySelectorAll("track");oldTracks.forEach(t=>t.remove());
-  if(vttFile){const track=document.createElement("track");track.src=vttFile+"?t="+Date.now();track.kind="subtitles";track.srclang="en";track.label="English";track.default=true;mainVideo.appendChild(track);}
+  mainVideo.querySelectorAll("track").forEach(t=>t.remove());
+  if(vttFile){
+    const track=document.createElement("track");
+    track.src=vttFile+"?t="+Date.now();
+    track.kind="subtitles";
+    track.srclang="en";
+    track.label="English";
+    track.default=true;
+    mainVideo.appendChild(track);
+  }
   mainVideo.load();
   mainVideo.addEventListener("loadedmetadata",()=>{for(let i=0;i<mainVideo.textTracks.length;i++){mainVideo.textTracks[i].mode="showing";}}, {once:true});
   bigPlayOverlay.classList.remove("hidden");
 }
 
-// --- Hotkeys like YouTube ---
-document.addEventListener("keydown",(e)=>{
-  if(["INPUT","TEXTAREA"].includes(e.target.tagName)) return;
-  switch(e.key.toLowerCase()){
-    case " ": case "k": e.preventDefault(); playBtn.click(); break;
-    case "j": mainVideo.currentTime=Math.max(0,mainVideo.currentTime-10); break;
-    case "l": mainVideo.currentTime=Math.min(mainVideo.duration,mainVideo.currentTime+10); break;
-    case "arrowleft": mainVideo.currentTime=Math.max(0,mainVideo.currentTime-5); break;
-    case "arrowright": mainVideo.currentTime=Math.min(mainVideo.duration,mainVideo.currentTime+5); break;
-    case "m": mainVideo.muted=!mainVideo.muted; break;
-    case "f": fsBtn.click(); break;
-    case "arrowup": e.preventDefault(); mainVideo.volume=Math.min(1,mainVideo.volume+0.05); volumeControl.value=mainVideo.volume; updateVol(); break;
-    case "arrowdown": e.preventDefault(); mainVideo.volume=Math.max(0,mainVideo.volume-0.05); volumeControl.value=mainVideo.volume; updateVol(); break;
+function loadVideoFromButton(btn){
+  let title=btn.textContent.trim();
+  const extra=btn.dataset.titleExtra;
+  if(extra){
+    const parts=title.split("–");
+    if(parts.length>=2){
+      title=parts[0].trim()+" "+extra+" – "+parts.slice(1).join("–").trim();
+    }else{
+      title+=" "+extra;
+    }
   }
-});
+  const spacerClass=btn.dataset.spacer||"spacer";
+  const aspect=btn.dataset.aspect||"169";
+  const src=btn.dataset.src;
+  const poster=btn.dataset.poster;
+  const vttFile=btn.dataset.vtt||null;
+  loadVideo(title,spacerClass,aspect,src,poster,vttFile);
+}
 
-// --- Alphabetical Sort + Random Video on Page Load ---
-window.addEventListener("DOMContentLoaded", () => {
-  const controls = document.querySelector(".controls");
-  const buttons = Array.from(controls.querySelectorAll("button"));
-
-  // Sort alphabetically (case-insensitive)
-  buttons.sort((a, b) => a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase()));
-
-  // Re-append in sorted order
-  buttons.forEach(btn => controls.appendChild(btn));
-
-  // Pick one at random
-  const randomBtn = buttons[Math.floor(Math.random() * buttons.length)];
-  randomBtn.click();
+window.addEventListener("DOMContentLoaded",()=>{
+  const controls=document.querySelector(".controls");
+  const buttons=Array.from(controls.querySelectorAll("button"));
+  buttons.sort((a,b)=>a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase()));
+  buttons.forEach(btn=>controls.appendChild(btn));
+  buttons.forEach(btn=>btn.addEventListener("click",()=>loadVideoFromButton(btn)));
+  const randomBtn=buttons[Math.floor(Math.random()*buttons.length)];
+  loadVideoFromButton(randomBtn);
 });
 </script>
 </body>
