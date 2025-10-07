@@ -9,11 +9,9 @@
 
   <style>
     body { font-family: avenir, sans-serif; background-color: #fff; margin: 0; }
-
     main { margin-top: 30px; margin-left: 10px; width: 80%; display: flex; justify-content: center; }
     .videoSection { width: 720px; flex: 0 0 720px; position: relative; }
 
-    /* Side button box */
     .controls {
       position: fixed; top: 30px; right: 10px; width: 20%;
       display: flex; flex-direction: column; gap: 10px; z-index: 10;
@@ -121,17 +119,13 @@
     <div id="videoTitle" class="title">EPMD - Richter Scale</div>
     <div id="videoSpacer" class="spacer spacer2"></div> 
     <div id="videoWrapper" class="videoWrapper" data-aspect="43">
-
       <img class="sticker" src="https://archive.org/serve/1output-alpha/9hMDWSa.png" alt="Parental Advisory">
-
       <video id="mainVideo" class="videoIframe" playsinline poster="https://i.imgur.com/TxicWJ9.jpeg">
         <source id="mainSource" src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4" type="video/mp4">
       </video>
-
       <div id="bigPlayOverlay" class="big-play">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
       </div>
-
       <div class="yt-controls">
         <button id="playBtn" class="yt-button"></button>
         <div class="yt-progress" id="progressBar">
@@ -150,162 +144,50 @@
   <button data-spacer="spacer" data-aspect="43"
     data-src="https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4"
     data-poster="https://archive.org/serve/1output-alpha/GFKINFO.jpg"
-    data-title-extra="f/ Raekwon, Cappadonna & The Force MDs">
-    Ghostface Killah – Daytona 500
-  </button>
+    data-title-extra="f/ Raekwon, Cappadonna & The Force MDs">Ghostface Killah – Daytona 500</button>
 
   <button data-spacer="spacer2" data-aspect="43"
     data-src="https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4"
     data-poster="https://ia801007.us.archive.org/3/items/1output-alpha/BCINFO.jpg"
-    data-title-extra="f/ Cam'Ron, Jadakiss & Busta Rhymes">
-    Bone Crusher – Never Scared (The Takeover Remix)
-  </button>
+    data-title-extra="f/ Cam'Ron, Jadakiss & Busta Rhymes">Bone Crusher – Never Scared (The Takeover Remix)</button>
 
   <button data-spacer="spacer3" data-aspect="169"
     data-src="https://archive.org/download/1output-alpha/Keith%20Murray%20featuring%20LL%20Cool%20J%20-%20Incredible.mp4"
     data-poster="https://archive.org/serve/1output-alpha/KMINFO.jpg"
-    data-title-extra="ft. LL Cool J">
-    Keith Murray – Incredible
-  </button>
+    data-title-extra="ft. LL Cool J">Keith Murray – Incredible</button>
 
   <button data-spacer="spacer" data-aspect="169"
     data-src="https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4"
     data-poster="https://archive.org/serve/1output-alpha/OKCOVER.jpg"
-    data-vtt="./subtitles/outkast-elevators.vtt">
-    Outkast – Elevators (Me & You)
-  </button>
+    data-vtt="./subtitles/outkast-elevators.vtt">Outkast – Elevators (Me & You)</button>
 
   <button data-spacer="spacer2" data-aspect="43"
     data-src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.ia.mp4"
-    data-poster="https://archive.org/serve/1output-alpha/EPMDINFO.jpg">
-    EPMD – Richter Scale
-  </button>
+    data-poster="https://archive.org/serve/1output-alpha/EPMDINFO.jpg">EPMD – Richter Scale</button>
 
   <button data-spacer="spacer3" data-aspect="43"
     data-src="https://archive.org/serve/mystikal-yall-aint-ready-yet/Mystikal%20-%20Y%27all%20Ain%27t%20Ready%20Yet%20%5B%5D.mp4"
-    data-poster="https://archive.org/serve/1output-alpha/MINFO.jpg">
-    Mystikal – Yall Ain’t Ready Yet
-  </button>
-
-  <button data-spacer="spacer" data-aspect="169"
-    data-src="https://archive.org/serve/beastie-boys-awesome-i-fuckin-shot-that/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21.mp4"
-    data-poster="https://archive.org/download/beastie-boys-awesome-i-fuckin-shot-that/beastie-boys-awesome-i-fuckin-shot-that.thumbs/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21_000310.jpg">
-    Beastie Boys – Awesome; I Fuckin' Shot That!
-  </button>
-
- <button data-spacer="spacer2" data-aspect="43"
-    data-src="https://archive.org/serve/company_flow-end_to_end_burners/Company%20Flow%20-%20End%20To%20End%20Burners.ia.mp4"
-    data-poster="https://archive.org/download/company_flow-end_to_end_burners/company_flow-end_to_end_burners.thumbs/Company%20Flow%20-%20End%20To%20End%20Burners_000149.jpg">
-    Company Flow - End To End Burners
-  </button>
+    data-poster="https://archive.org/serve/1output-alpha/MINFO.jpg">Mystikal – Yall Ain’t Ready Yet</button>
 
   <button data-spacer="spacer2" data-aspect="43"
     data-src="https://archive.org/serve/MCTHICKBRICKJUNGLE/MC%20Thick%20-%20From%20The%20Brick%20Jungle.ia.mp4"
-    data-poster="https://archive.org/download/MCTHICKBRICKJUNGLE/MCTHICKBRICKJUNGLE.thumbs/MC Thick - From The Brick Jungle_000148.jpg">MC Thick - From The Brick Jungle
-  </button>
-  
+    data-poster="https://archive.org/download/MCTHICKBRICKJUNGLE/MCTHICKBRICKJUNGLE.thumbs/MC%20Thick%20-%20From%20The%20Brick%20Jungle_000148.jpg">MC Thick – From The Brick Jungle</button>
+
+  <button data-spacer="spacer" data-aspect="169"
+    data-src="https://archive.org/serve/beastie-boys-awesome-i-fuckin-shot-that/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21.mp4"
+    data-poster="https://archive.org/download/beastie-boys-awesome-i-fuckin-shot-that/beastie-boys-awesome-i-fuckin-shot-that.thumbs/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21_000310.jpg">Beastie Boys – Awesome; I Fuckin' Shot That!</button>
+
+  <button data-spacer="spacer2" data-aspect="43"
+    data-src="https://archive.org/serve/company_flow-end_to_end_burners/Company%20Flow%20-%20End%20To%20End%20Burners.ia.mp4"
+    data-poster="https://archive.org/download/company_flow-end_to_end_burners/company_flow-end_to_end_burners.thumbs/Company%20Flow%20-%20End%20To%20End%20Burners_000149.jpg">Company Flow – End To End Burners</button>
 </div>
 
 <script>
-const playIcon=`<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M8 5v14l11-7z"/></svg>`;
-const pauseIcon=`<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
-
-const mainVideo=document.getElementById("mainVideo");
-const playBtn=document.getElementById("playBtn");
-const progressFill=document.getElementById("progressFill");
-const progressHandle=document.getElementById("progressHandle");
-const timeDisplay=document.getElementById("timeDisplay");
-const volumeControl=document.getElementById("volumeControl");
-const fsBtn=document.getElementById("fsBtn");
-const progressBar=document.getElementById("progressBar");
-const bigPlayOverlay=document.getElementById("bigPlayOverlay");
-
-playBtn.innerHTML=playIcon;
-
-bigPlayOverlay.addEventListener("click",()=>{mainVideo.play();});
-mainVideo.addEventListener("play",()=>{bigPlayOverlay.classList.add("hidden");playBtn.innerHTML=pauseIcon;});
-mainVideo.addEventListener("pause",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
-mainVideo.addEventListener("ended",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
-
-playBtn.addEventListener("click",()=>{if(mainVideo.paused){mainVideo.play();}else{mainVideo.pause();}});
-
-mainVideo.addEventListener("timeupdate",()=>{
-  if(!mainVideo.duration)return;
-  const percent=(mainVideo.currentTime/mainVideo.duration)*100;
-  progressFill.style.width=percent+"%";
-  progressHandle.style.left=percent+"%";
-  timeDisplay.textContent=formatTime(mainVideo.currentTime)+" / "+formatTime(mainVideo.duration);
-});
-function formatTime(s){const m=Math.floor(s/60)||0;const sec=Math.floor(s%60)||0;return m+":"+(sec<10?"0"+sec:sec);}
-
-progressBar.addEventListener("click",e=>{
-  const r=progressBar.getBoundingClientRect();
-  const pos=(e.clientX-r.left)/r.width;
-  mainVideo.currentTime=pos*mainVideo.duration;
-});
-
-function updateVol(){volumeControl.style.setProperty("--val",(volumeControl.value*100)+"%");}
-volumeControl.addEventListener("input",()=>{mainVideo.volume=volumeControl.value;updateVol();});
-updateVol();
-
-fsBtn.addEventListener("click",()=>{if(document.fullscreenElement){document.exitFullscreen();}else{mainVideo.requestFullscreen?.();}});
-
-function adjustTitleSize(titleElement){
-  const text=titleElement.textContent.trim();
-  titleElement.style.fontSize=(text.length>50)?"90%":"140%";
-}
-
-function loadVideo(title,spacerClass,aspect,src,poster,vttFile){
-  const titleEl=document.getElementById("videoTitle");
-  titleEl.textContent=title;
-  adjustTitleSize(titleEl);
-  document.getElementById("videoSpacer").className="spacer "+spacerClass;
-  document.getElementById("videoWrapper").setAttribute("data-aspect",aspect);
-  const mainSource=document.getElementById("mainSource");
-  mainVideo.pause();mainSource.src=src;mainVideo.poster=poster;
-  playBtn.innerHTML=playIcon;
-  mainVideo.querySelectorAll("track").forEach(t=>t.remove());
-  if(vttFile){
-    const track=document.createElement("track");
-    track.src=vttFile+"?t="+Date.now();
-    track.kind="subtitles";
-    track.srclang="en";
-    track.label="English";
-    track.default=true;
-    mainVideo.appendChild(track);
-  }
-  mainVideo.load();
-  mainVideo.addEventListener("loadedmetadata",()=>{for(let i=0;i<mainVideo.textTracks.length;i++){mainVideo.textTracks[i].mode="showing";}}, {once:true});
-  bigPlayOverlay.classList.remove("hidden");
-}
-
-function loadVideoFromButton(btn){
-  let title=btn.textContent.trim();
-  const extra=btn.dataset.titleExtra;
-  if(extra){
-    const parts=title.split("–");
-    if(parts.length>=2){
-      title=parts[0].trim()+" "+extra+" – "+parts.slice(1).join("–").trim();
-    }else{
-      title+=" "+extra;
-    }
-  }
-  const spacerClass=btn.dataset.spacer||"spacer";
-  const aspect=btn.dataset.aspect||"169";
-  const src=btn.dataset.src;
-  const poster=btn.dataset.poster;
-  const vttFile=btn.dataset.vtt||null;
-  loadVideo(title,spacerClass,aspect,src,poster,vttFile);
-}
-
 window.addEventListener("DOMContentLoaded",()=>{
   const controls=document.querySelector(".controls");
   const buttons=Array.from(controls.querySelectorAll("button"));
-  buttons.sort((a,b)=>a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase()));
+  buttons.sort((a,b)=>a.textContent.trim().toLowerCase().localeCompare(b.textContent.trim().toLowerCase()));
   buttons.forEach(btn=>controls.appendChild(btn));
-  buttons.forEach(btn=>btn.addEventListener("click",()=>loadVideoFromButton(btn)));
-  const randomBtn=buttons[Math.floor(Math.random()*buttons.length)];
-  loadVideoFromButton(randomBtn);
 });
 </script>
 </body>
