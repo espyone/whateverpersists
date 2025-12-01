@@ -3,28 +3,21 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Webamp — Auto 01..18 with Tag Titles</title>
+<title>Webamp — Auto 01..18 with Tag Titles (Partial Fetch)</title>
 <style>
   :root { color-scheme: dark; }
   html, body { height: 100%; }
-  body {
-    margin: 0;
-    background: #0b0b0b;
-    color: #ddd;
-    font-family: sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;   /* center Webamp */
+  body{
+    margin:0; background:#0b0b0b; color:#ddd; font-family:sans-serif;
+    display:flex; align-items:center; justify-content:center;  /* center Winamp */
   }
-  /* Anchor so we can position windows relative to page center */
   #webamp-anchor { position: relative; width: 0; height: 0; }
   #msg { position: fixed; left: 12px; bottom: 12px; font-size: 12px; opacity: .85; }
-  code { background:#222; padding:0 4px; border-radius:3px; }
 </style>
 
-<!-- Webamp (Winamp in JS) -->
+<!-- Webamp only (we update titles by resetting refs once tags are known) -->
 <script defer src="https://cdn.jsdelivr.net/npm/webamp@2.2.0/built/webamp.bundle.min.js"></script>
-<!-- Tag reader (OGG Vorbis comments, ID3, etc.) -->
+<!-- Tag reader -->
 <script defer src="https://cdn.jsdelivr.net/npm/music-metadata-browser/dist/music-metadata-browser.min.js"></script>
 </head>
 <body>
@@ -35,24 +28,10 @@
 
 <script>
 (async () => {
-  // ====== CONFIG ======
-  // Use your hosted music path (works locally too if it's the same domain):
-  const BASE_URL = "https://whateverpersists.com/music/";
-  // If you prefer local files in the repo instead, use:
-  // const BASE_URL = new URL("./music/", location.href).href;
-
-  const START_NUM = 1;         // 01.ogg
-  const END_NUM   = 18;        // ...18.ogg
-  const EXT       = ".ogg";
-  const SKIN_PATH = new URL("./skins/base-2.91.wsz", location.href).href; // self-hosted skin
-
   const $msg = document.getElementById("msg");
-  const say = (t) => ($msg.innerHTML = t || "");
-  const waitForWebamp = () => new Promise(res=>{
-    const id = setInterval(()=>{ if (window.Webamp){ clearInterval(id); res(); }}, 25);
-  });
+  const say = (t) => ($msg.textContent = t || "");
 
-  // Clear any cached CDN skin so it won't try to re-fetch a broken URL
+  // Wipe any cached skin pointers to avoid CDN popups
   try {
     Object.keys(localStorage).forEach(k => {
       const lk = k.toLowerCase();
@@ -62,83 +41,127 @@
     });
   } catch {}
 
-  await waitForWebamp();
+  // Wait for libs
+  await new Promise(r => {
+    const id = setInterval(() => { if (window.Webamp && window.musicMetadata) { clearInterval(id); r(); } }, 25);
+  });
 
-  // Build 01..18 filenames
-  function buildList(start, end, ext) {
-    const arr = [];
-    for (let i = start; i <= end; i++) {
-      arr.push(String(i).padStart(2, "0") + ext);
-    }
-    return arr;
-  }
+  // --- Config ---
+  const MUSIC_DIR = new URL("./music/", location.href);
+  const START = 1, END = 18, EXT = ".ogg";
+  const RANGE_BYTES = 256 * 1024; // read first 256 KB only
+  const CONCURRENCY = 3;          // parse up to 3 files at once (tune as needed)
 
-  // Helpers to read tags from remote URL; fallback to filename if CORS/parse fails
-  function basenameNoExt(u) {
-    const base = u.split("/").pop().split("?")[0].split("#")[0];
-    return base.replace(/\.[^.]+$/, "");
-  }
+  // Build initial track refs using filenames (instant)
+  const files = Array.from({length: END - START + 1}, (_,i) =>
+    String(i + START).padStart(2, "0") + EXT
+  );
+  const urls = files.map(fn => new URL(fn, MUSIC_DIR).href);
 
-  async function readTagsFromUrl(url) {
-    try {
-      const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const blob = await res.blob();
-      const { parseBlob } = window.musicMetadata || {};
-      if (!parseBlob) throw new Error("music-metadata not ready");
-      const meta = await parseBlob(blob);
-      const c = (meta && meta.common) || {};
-      const t = c.track && (typeof c.track === "object" ? c.track.no : c.track);
-      const d = c.disk  && (typeof c.disk  === "object" ? c.disk.no  : c.disk);
-      return {
-        title: c.title || null,
-        artist: c.artist || c.albumartist || "",
-        track: (t!=null && !Number.isNaN(Number(t))) ? Number(t) : null,
-        disc:  (d!=null && !Number.isNaN(Number(d))) ? Number(d) : null
-      };
-    } catch {
-      return null; // title fallback to filename
-    }
-  }
+  let refs = urls.map(u => {
+    const title = u.split("/").pop().replace(/\.[^.]+$/, "");
+    return { url: u, defaultName: title, metaData: { title, artist: "" } };
+  });
 
-  // Build track references with nice titles
-  const files = buildList(START_NUM, END_NUM, EXT);
-  const urls  = files.map(fn => new URL(fn, BASE_URL).href);
-
-  say("Loading tracks…");
-  const refs = await Promise.all(urls.map(async (u) => {
-    const md = await readTagsFromUrl(u); // may be null if CORS/parse fails
-    const title  = (md && md.title)  || basenameNoExt(u);
-    const artist = (md && md.artist) || "";
-    return { url: u, defaultName: title, metaData: { title, artist } };
-  }));
-
-  // Spin up Webamp, centered, with your local skin; keep EQ closed
+  // Create player with default skin (no external fetch), centered windows
   const webamp = new Webamp({
     enableHotkeys: true,
-    initialSkin: { url: SKIN_PATH },
     __initialWindowLayout: {
       main:     { position: { x: -150, y: -80 } },
       playlist: { position: { x: -150, y:  40 }, size: [0, 4] }
-      // equalizer intentionally omitted
     },
     initialTracks: refs
   });
 
+  say("Loading player…");
   await webamp.renderWhenReady(document.getElementById("webamp-target"));
   try { webamp.store.dispatch({ type: "CLOSE_WINDOW", windowId: "equalizer" }); } catch {}
+  say(""); // clear
 
-  // Optional: quickly warn if any URLs 404 (kept lightweight)
-  let missing = 0;
-  for (const r of refs) {
+  // ---- Background tag upgrade using partial range fetch ----
+  const { parseBlob } = window.musicMetadata;
+
+  async function readTagsPartial(url) {
+    // Try HEAD first (optional)
+    try { await fetch(url, { method: "HEAD", cache: "no-store" }); } catch {}
+    // Partial fetch (needs Accept-Ranges on server; most have it)
     try {
-      const head = await fetch(r.url, { method: "HEAD", cache: "no-store" });
-      if (!head.ok) { missing++; console.warn("Missing:", r.url, head.status); }
-    } catch (e) { missing++; console.warn("Error:", r.url, e); }
+      const res = await fetch(url, {
+        cache: "no-store",
+        headers: { Range: `bytes=0-${RANGE_BYTES-1}` }
+      });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const blob = await res.blob();
+      const meta = await parseBlob(blob);
+      const c = meta.common || {};
+      const title  = c.title  || null;
+      const artist = c.artist || c.albumartist || "";
+      const trk    = c.track && (typeof c.track === "object" ? c.track.no : c.track);
+      const dsk    = c.disk  && (typeof c.disk  === "object" ? c.disk.no  : c.disk);
+      return {
+        title, artist,
+        track: (trk!=null && !Number.isNaN(Number(trk))) ? Number(trk) : null,
+        disc:  (dsk!=null && !Number.isNaN(Number(dsk))) ? Number(dsk) : null
+      };
+    } catch (e) {
+      return null;
+    }
   }
-  say(missing ? `Loaded ${refs.length - missing}/${refs.length}. Some files are missing or blocked (see console).`
-              : `Loaded ${refs.length} tracks from <code>${BASE_URL}</code>. Click to hide.`);
-  $msg.onclick = () => say("");
+
+  // Limit concurrency
+  async function mapLimit(items, limit, fn) {
+    const out = new Array(items.length);
+    let i = 0, running = 0;
+    return await new Promise((resolve) => {
+      function next() {
+        while (running < limit && i < items.length) {
+          const idx = i++;
+          running++;
+          fn(items[idx], idx).then(val => { out[idx] = val; })
+                             .catch(() => { out[idx] = null; })
+                             .finally(() => { running--; (i >= items.length && running === 0) ? resolve(out) : next(); });
+        }
+      }
+      next();
+    });
+  }
+
+  say("Reading tags… (background)");
+  const tagResults = await mapLimit(urls, CONCURRENCY, readTagsPartial);
+
+  // If we got at least one tag, rebuild refs with improved titles
+  let upgraded = false;
+  refs = refs.map((r, idx) => {
+    const md = tagResults[idx];
+    if (md && (md.title || md.artist)) {
+      upgraded = true;
+      const title = md.title || r.metaData.title;
+      return { url: r.url, defaultName: title, metaData: { title, artist: md.artist || "" } };
+    }
+    return r;
+  });
+
+  if (upgraded) {
+    // Warning: resetting refs may restart playback. To avoid that,
+    // only apply when nothing is playing:
+    let isPlaying = false;
+    try {
+      const state = webamp.store.getState();
+      // naive check; if we can't detect, just apply anyway
+      isPlaying = state.media && state.media.status === "PLAYING";
+    } catch {}
+
+    if (!isPlaying) {
+      await webamp.setTracksFromReferences(refs);
+      say("Titles updated from tags. (Click to hide)");
+    } else {
+      say("Tags read. Titles will update when you stop playback.");
+      // Optional: wait a bit then apply anyway (commented)
+      // setTimeout(async () => { await webamp.setTracksFromReferences(refs); say(""); }, 1000);
+    }
+  } else {
+    say(""); // nothing to update
+  }
 })();
 </script>
 </body>
