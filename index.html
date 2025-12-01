@@ -3,35 +3,48 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Webamp — Auto 01..18 with Tag Titles (Partial Fetch)</title>
+<title>Webamp — Minimal Loader (diagnostics)</title>
 <style>
   :root { color-scheme: dark; }
   html, body { height: 100%; }
   body{
     margin:0; background:#0b0b0b; color:#ddd; font-family:sans-serif;
-    display:flex; align-items:center; justify-content:center;  /* center Winamp */
+    display:flex; align-items:center; justify-content:center; /* center Webamp */
   }
-  #webamp-anchor { position: relative; width: 0; height: 0; }
-  #msg { position: fixed; left: 12px; bottom: 12px; font-size: 12px; opacity: .85; }
+  #webamp-anchor { position: relative; width:0; height:0; }
+  #status {
+    position: fixed; left: 12px; bottom: 12px; right: 12px;
+    background: #111; border: 1px solid #333; padding: 8px 10px;
+    font: 12px/1.4 system-ui, sans-serif; color: #cfd7df; border-radius: 6px;
+    max-height: 35vh; overflow:auto; white-space: pre-wrap;
+  }
+  #status b { color: #9ad; }
 </style>
 
-<!-- Webamp only (we update titles by resetting refs once tags are known) -->
+<!-- Webamp only (no skin fetch, no tag reader) -->
 <script defer src="https://cdn.jsdelivr.net/npm/webamp@2.2.0/built/webamp.bundle.min.js"></script>
-<!-- Tag reader -->
-<script defer src="https://cdn.jsdelivr.net/npm/music-metadata-browser/dist/music-metadata-browser.min.js"></script>
 </head>
 <body>
   <div id="webamp-anchor">
     <div id="webamp-target"></div>
   </div>
-  <div id="msg" aria-live="polite"></div>
+  <div id="status" aria-live="polite">starting…</div>
 
 <script>
-(async () => {
-  const $msg = document.getElementById("msg");
-  const say = (t) => ($msg.textContent = t || "");
+(function(){
+  const $status = document.getElementById("status");
+  const log = (...args) => { $status.textContent += "\\n" + args.join(" "); };
+  $status.textContent = "loading…";
 
-  // Wipe any cached skin pointers to avoid CDN popups
+  // Show JS errors on the page so a blank screen never hides the problem
+  window.onerror = function(msg, src, line, col, err){
+    log("❌ JS error:", msg, src||"", line||"", col||"");
+  };
+  window.addEventListener("unhandledrejection", e => {
+    log("❌ Unhandled promise rejection:", e.reason && (e.reason.stack || e.reason.message || e.reason));
+  });
+
+  // Clear any old Webamp skin pointers that might cause popup attempts
   try {
     Object.keys(localStorage).forEach(k => {
       const lk = k.toLowerCase();
@@ -41,127 +54,62 @@
     });
   } catch {}
 
-  // Wait for libs
-  await new Promise(r => {
-    const id = setInterval(() => { if (window.Webamp && window.musicMetadata) { clearInterval(id); r(); } }, 25);
+  // Wait for Webamp to be available
+  const waitForWebamp = () => new Promise(res=>{
+    const id = setInterval(()=>{ if (window.Webamp){ clearInterval(id); res(); } }, 25);
+    setTimeout(()=>{ clearInterval(id); log("⚠️ Webamp library not found."); }, 15000);
   });
 
-  // --- Config ---
-  const MUSIC_DIR = new URL("./music/", location.href);
-  const START = 1, END = 18, EXT = ".ogg";
-  const RANGE_BYTES = 256 * 1024; // read first 256 KB only
-  const CONCURRENCY = 3;          // parse up to 3 files at once (tune as needed)
+  (async () => {
+    await waitForWebamp();
 
-  // Build initial track refs using filenames (instant)
-  const files = Array.from({length: END - START + 1}, (_,i) =>
-    String(i + START).padStart(2, "0") + EXT
-  );
-  const urls = files.map(fn => new URL(fn, MUSIC_DIR).href);
-
-  let refs = urls.map(u => {
-    const title = u.split("/").pop().replace(/\.[^.]+$/, "");
-    return { url: u, defaultName: title, metaData: { title, artist: "" } };
-  });
-
-  // Create player with default skin (no external fetch), centered windows
-  const webamp = new Webamp({
-    enableHotkeys: true,
-    __initialWindowLayout: {
-      main:     { position: { x: -150, y: -80 } },
-      playlist: { position: { x: -150, y:  40 }, size: [0, 4] }
-    },
-    initialTracks: refs
-  });
-
-  say("Loading player…");
-  await webamp.renderWhenReady(document.getElementById("webamp-target"));
-  try { webamp.store.dispatch({ type: "CLOSE_WINDOW", windowId: "equalizer" }); } catch {}
-  say(""); // clear
-
-  // ---- Background tag upgrade using partial range fetch ----
-  const { parseBlob } = window.musicMetadata;
-
-  async function readTagsPartial(url) {
-    // Try HEAD first (optional)
-    try { await fetch(url, { method: "HEAD", cache: "no-store" }); } catch {}
-    // Partial fetch (needs Accept-Ranges on server; most have it)
-    try {
-      const res = await fetch(url, {
-        cache: "no-store",
-        headers: { Range: `bytes=0-${RANGE_BYTES-1}` }
-      });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const blob = await res.blob();
-      const meta = await parseBlob(blob);
-      const c = meta.common || {};
-      const title  = c.title  || null;
-      const artist = c.artist || c.albumartist || "";
-      const trk    = c.track && (typeof c.track === "object" ? c.track.no : c.track);
-      const dsk    = c.disk  && (typeof c.disk  === "object" ? c.disk.no  : c.disk);
-      return {
-        title, artist,
-        track: (trk!=null && !Number.isNaN(Number(trk))) ? Number(trk) : null,
-        disc:  (dsk!=null && !Number.isNaN(Number(dsk))) ? Number(dsk) : null
-      };
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // Limit concurrency
-  async function mapLimit(items, limit, fn) {
-    const out = new Array(items.length);
-    let i = 0, running = 0;
-    return await new Promise((resolve) => {
-      function next() {
-        while (running < limit && i < items.length) {
-          const idx = i++;
-          running++;
-          fn(items[idx], idx).then(val => { out[idx] = val; })
-                             .catch(() => { out[idx] = null; })
-                             .finally(() => { running--; (i >= items.length && running === 0) ? resolve(out) : next(); });
-        }
-      }
-      next();
+    // Build fixed list: music/01.ogg … music/18.ogg relative to this page
+    const MUSIC_DIR = new URL("./music/", location.href);
+    const START = 1, END = 18, EXT = ".ogg";
+    const files = Array.from({length: END - START + 1}, (_, i) => String(i + START).padStart(2, "0") + EXT);
+    const tracks = files.map(fn => {
+      const url = new URL(fn, MUSIC_DIR).href;
+      const title = fn.replace(/\.[^.]+$/, "");
+      return { url, defaultName: title, metaData: { title, artist: "" } };
     });
-  }
 
-  say("Reading tags… (background)");
-  const tagResults = await mapLimit(urls, CONCURRENCY, readTagsPartial);
+    log("• building track list from", MUSIC_DIR.href);
+    log("• first track:", tracks[0].url);
+    log("• last  track:", tracks[tracks.length-1].url);
 
-  // If we got at least one tag, rebuild refs with improved titles
-  let upgraded = false;
-  refs = refs.map((r, idx) => {
-    const md = tagResults[idx];
-    if (md && (md.title || md.artist)) {
-      upgraded = true;
-      const title = md.title || r.metaData.title;
-      return { url: r.url, defaultName: title, metaData: { title, artist: md.artist || "" } };
-    }
-    return r;
-  });
+    // Create Webamp (uses built-in default skin — no external fetch)
+    const webamp = new Webamp({
+      enableHotkeys: true,
+      __initialWindowLayout: {
+        main:     { position: { x: -150, y: -80 } },
+        playlist: { position: { x: -150, y:  40 }, size: [0, 4] }
+        // equalizer omitted
+      },
+      initialTracks: tracks
+    });
 
-  if (upgraded) {
-    // Warning: resetting refs may restart playback. To avoid that,
-    // only apply when nothing is playing:
-    let isPlaying = false;
     try {
-      const state = webamp.store.getState();
-      // naive check; if we can't detect, just apply anyway
-      isPlaying = state.media && state.media.status === "PLAYING";
-    } catch {}
-
-    if (!isPlaying) {
-      await webamp.setTracksFromReferences(refs);
-      say("Titles updated from tags. (Click to hide)");
-    } else {
-      say("Tags read. Titles will update when you stop playback.");
-      // Optional: wait a bit then apply anyway (commented)
-      // setTimeout(async () => { await webamp.setTracksFromReferences(refs); say(""); }, 1000);
+      await webamp.renderWhenReady(document.getElementById("webamp-target"));
+      try { webamp.store.dispatch({ type: "CLOSE_WINDOW", windowId: "equalizer" }); } catch {}
+      log("✅ player rendered.");
+      $status.textContent = "ready. (click to hide)";
+      $status.onclick = () => ($status.style.display = "none");
+    } catch (e) {
+      log("❌ render error:", e && (e.stack || e.message || e));
     }
-  } else {
-    say(""); // nothing to update
-  }
+
+    // Optional lightweight checks (will not block UI)
+    setTimeout(async () => {
+      let missing = 0;
+      for (const t of tracks) {
+        try {
+          const r = await fetch(t.url, { method:"HEAD", cache:"no-store" });
+          if (!r.ok) { missing++; log("⚠️", r.status, t.url); }
+        } catch (err) { missing++; log("⚠️ fetch error", t.url, err && err.message); }
+      }
+      if (missing) log(`⚠️ ${missing} file(s) missing or blocked (see lines above).`);
+    }, 300);
+  })();
 })();
 </script>
 </body>
