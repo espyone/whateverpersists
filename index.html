@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Webamp — Minimal Loader (diagnostics)</title>
+<title>Webamp — M3U Titles + Fallback 01..18</title>
 <style>
   :root { color-scheme: dark; }
   html, body { height: 100%; }
@@ -14,14 +14,13 @@
   #webamp-anchor { position: relative; width:0; height:0; }
   #status {
     position: fixed; left: 12px; bottom: 12px; right: 12px;
-    background: #111; border: 1px solid #333; padding: 8px 10px;
-    font: 12px/1.4 system-ui, sans-serif; color: #cfd7df; border-radius: 6px;
-    max-height: 35vh; overflow:auto; white-space: pre-wrap;
+    background:#111; border:1px solid #333; padding:8px 10px; border-radius:6px;
+    font: 12px/1.4 system-ui, sans-serif; color:#cfd7df; max-height:35vh; overflow:auto; white-space:pre-wrap;
   }
-  #status b { color: #9ad; }
+  #status b { color:#9ad; }
 </style>
 
-<!-- Webamp only (no skin fetch, no tag reader) -->
+<!-- Webamp only (built-in default skin; no external skin fetch) -->
 <script defer src="https://cdn.jsdelivr.net/npm/webamp@2.2.0/built/webamp.bundle.min.js"></script>
 </head>
 <body>
@@ -33,20 +32,18 @@
 <script>
 (function(){
   const $status = document.getElementById("status");
-  const log = (...args) => { $status.textContent += "\\n" + args.join(" "); };
-  $status.textContent = "loading…";
+  const log = (...a)=>{ $status.textContent += "\\n" + a.join(" "); };
+  const set = (t)=>{ $status.textContent = t; };
 
-  // Show JS errors on the page so a blank screen never hides the problem
-  window.onerror = function(msg, src, line, col, err){
-    log("❌ JS error:", msg, src||"", line||"", col||"");
-  };
-  window.addEventListener("unhandledrejection", e => {
-    log("❌ Unhandled promise rejection:", e.reason && (e.reason.stack || e.reason.message || e.reason));
+  // Show JS errors inline so we don't chase ghosts
+  window.onerror = (m,src,l,c,e)=>{ log("❌ JS error:", m, src||"", l||"", c||""); };
+  window.addEventListener("unhandledrejection", e=>{
+    log("❌ Unhandled rejection:", (e.reason && (e.reason.stack||e.reason.message)) || e.reason);
   });
 
-  // Clear any old Webamp skin pointers that might cause popup attempts
+  // Clear any old skin pointers that might resurrect a bad CDN URL
   try {
-    Object.keys(localStorage).forEach(k => {
+    Object.keys(localStorage).forEach(k=>{
       const lk = k.toLowerCase();
       if (lk.includes("webamp") && (lk.includes("skin") || lk.includes("persist"))) {
         localStorage.removeItem(k);
@@ -54,60 +51,129 @@
     });
   } catch {}
 
-  // Wait for Webamp to be available
+  // Wait for Webamp
   const waitForWebamp = () => new Promise(res=>{
     const id = setInterval(()=>{ if (window.Webamp){ clearInterval(id); res(); } }, 25);
-    setTimeout(()=>{ clearInterval(id); log("⚠️ Webamp library not found."); }, 15000);
+    setTimeout(()=>{ clearInterval(id); log("⚠️ Webamp library not found (timeout)."); }, 15000);
   });
+
+  // Fetch text helper
+  async function fetchText(url) {
+    try {
+      const r = await fetch(url, { cache: "no-store" });
+      if (!r.ok) return null;
+      return await r.text();
+    } catch { return null; }
+  }
+
+  // Parse M3U / M3U8 with #EXTINF support for titles
+  // Returns array of { href, title, artist }
+  function parseM3UToEntries(txt, baseUrl) {
+    const lines = txt.split(/\r?\n/);
+    const out = [];
+    let pendingTitle = null;
+
+    for (let raw of lines) {
+      if (!raw) continue;
+      const line = raw.trim();
+      if (!line) continue;
+
+      if (/^#EXTINF:/i.test(line)) {
+        // #EXTINF:duration,Artist - Title   OR   #EXTINF:duration,Title
+        const m = line.match(/^#EXTINF:\s*([^,]*),(.*)$/i);
+        const titlePart = m ? m[2].trim() : "";
+        // Try split "Artist - Title"
+        let artist = "", title = titlePart;
+        const dash = titlePart.indexOf(" - ");
+        if (dash > -1) {
+          artist = titlePart.slice(0, dash).trim();
+          title  = titlePart.slice(dash + 3).trim();
+        }
+        pendingTitle = { title, artist };
+        continue;
+      }
+      if (line.startsWith("#")) continue; // other comments
+
+      // It's a path/URL. Resolve relative to /music/
+      const href = new URL(line, baseUrl).href;
+      let title = line.split("/").pop().replace(/\.[^.]+$/, "");
+      let artist = "";
+      if (pendingTitle) {
+        if (pendingTitle.title)  title  = pendingTitle.title;
+        if (pendingTitle.artist) artist = pendingTitle.artist;
+        pendingTitle = null;
+      }
+      out.push({ href, title, artist });
+    }
+    return out;
+  }
 
   (async () => {
     await waitForWebamp();
 
-    // Build fixed list: music/01.ogg … music/18.ogg relative to this page
     const MUSIC_DIR = new URL("./music/", location.href);
-    const START = 1, END = 18, EXT = ".ogg";
-    const files = Array.from({length: END - START + 1}, (_, i) => String(i + START).padStart(2, "0") + EXT);
-    const tracks = files.map(fn => {
-      const url = new URL(fn, MUSIC_DIR).href;
-      const title = fn.replace(/\.[^.]+$/, "");
-      return { url, defaultName: title, metaData: { title, artist: "" } };
-    });
+    set("Looking for playlist…");
 
-    log("• building track list from", MUSIC_DIR.href);
-    log("• first track:", tracks[0].url);
-    log("• last  track:", tracks[tracks.length-1].url);
+    // 1) Try playlist.m3u then playlist.m3u8
+    let entries = null;
+    const m3uUrl  = new URL("playlist.m3u",  MUSIC_DIR).href;
+    const m3u8Url = new URL("playlist.m3u8", MUSIC_DIR).href;
 
-    // Create Webamp (uses built-in default skin — no external fetch)
+    let txt = await fetchText(m3uUrl);
+    if (!txt) txt = await fetchText(m3u8Url);
+
+    if (txt) {
+      const list = parseM3UToEntries(txt, MUSIC_DIR);
+      if (list.length) {
+        entries = list.map(x => ({
+          url: x.href,
+          defaultName: x.title,
+          metaData: { title: x.title, artist: x.artist || "" }
+        }));
+        log("✅ Loaded playlist with", entries.length, "entries.");
+      } else {
+        log("⚠️ Playlist found but contained no playable lines. Falling back.");
+      }
+    } else {
+      log("ℹ️ No playlist file found. Using fallback sequence.");
+    }
+
+    // 2) Fallback to 01.ogg .. 18.ogg if no playlist
+    if (!entries) {
+      const START = 1, END = 18, EXT = ".ogg";
+      const files = Array.from({length: END-START+1}, (_,i)=> String(i+START).padStart(2,"0")+EXT);
+      entries = files.map(fn => {
+        const href = new URL(fn, MUSIC_DIR).href;
+        const title = fn.replace(/\.[^.]+$/, "");
+        return { url: href, defaultName: title, metaData: { title, artist: "" } };
+      });
+      log(`✅ Fallback: ${entries.length} files from`, MUSIC_DIR.href);
+    }
+
+    // 3) Spin up Webamp (built-in default skin), centered
     const webamp = new Webamp({
       enableHotkeys: true,
       __initialWindowLayout: {
         main:     { position: { x: -150, y: -80 } },
         playlist: { position: { x: -150, y:  40 }, size: [0, 4] }
-        // equalizer omitted
       },
-      initialTracks: tracks
+      initialTracks: entries
     });
 
-    try {
-      await webamp.renderWhenReady(document.getElementById("webamp-target"));
-      try { webamp.store.dispatch({ type: "CLOSE_WINDOW", windowId: "equalizer" }); } catch {}
-      log("✅ player rendered.");
-      $status.textContent = "ready. (click to hide)";
-      $status.onclick = () => ($status.style.display = "none");
-    } catch (e) {
-      log("❌ render error:", e && (e.stack || e.message || e));
-    }
+    await webamp.renderWhenReady(document.getElementById("webamp-target"));
+    try { webamp.store.dispatch({ type: "CLOSE_WINDOW", windowId: "equalizer" }); } catch {}
+    set("ready. (click to hide)"); $status.onclick = ()=>($status.style.display="none");
 
-    // Optional lightweight checks (will not block UI)
-    setTimeout(async () => {
+    // Optional quick HEAD checks (non-blocking)
+    setTimeout(async ()=>{
       let missing = 0;
-      for (const t of tracks) {
+      for (const tr of entries) {
         try {
-          const r = await fetch(t.url, { method:"HEAD", cache:"no-store" });
-          if (!r.ok) { missing++; log("⚠️", r.status, t.url); }
-        } catch (err) { missing++; log("⚠️ fetch error", t.url, err && err.message); }
+          const r = await fetch(tr.url, { method: "HEAD", cache: "no-store" });
+          if (!r.ok) { missing++; log("⚠️", r.status, tr.url); }
+        } catch(e){ missing++; log("⚠️ fetch error", tr.url, e && e.message); }
       }
-      if (missing) log(`⚠️ ${missing} file(s) missing or blocked (see lines above).`);
+      if (missing) log(`⚠️ ${missing} file(s) missing or blocked (see above).`);
     }, 300);
   })();
 })();
