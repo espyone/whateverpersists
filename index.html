@@ -1,318 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=.71, maximum-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-  <title>Whatever Persists</title>
-  <link href="https://fonts.googleapis.com/css2?family=Aldrich&family=Fredoka+One&display=swap" rel="stylesheet">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Webamp — Auto 01..18 with Tag Titles</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: #0b0b0b;
+    color: #ddd;
+    font-family: sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;   /* center Webamp */
+  }
+  /* Anchor so we can position windows relative to page center */
+  #webamp-anchor { position: relative; width: 0; height: 0; }
+  #msg { position: fixed; left: 12px; bottom: 12px; font-size: 12px; opacity: .85; }
+  code { background:#222; padding:0 4px; border-radius:3px; }
+</style>
 
-  <style>
-    body { font-family: avenir, sans-serif; background-color: #fff; margin: 0; }
-
-    main { margin-top: 30px; margin-left: 10px; width: 80%; display: flex; justify-content: center; }
-    .videoSection { width: 720px; flex: 0 0 720px; position: relative; }
-
-    /* Side button box */
-    .controls {
-      position: fixed; top: 30px; right: 10px; width: 20%;
-      display: flex; flex-direction: column; gap: 10px; z-index: 10;
-    }
-    .controls button {
-      padding: 10px 12px; font-family: 'Aldrich', sans-serif; font-size: 14px;
-      border: none; border-radius: 4px; cursor: pointer;
-      background: #333; color: white; transition: background 0.2s; text-align: left;
-    }
-    .controls button:hover { background: red; }
-
-    .spacer,.spacer2,.spacer3 {
-      position: relative; z-index: 3; top: 10px;
-      padding: 9.9px; opacity: 1; width: 97.5%;
-      border-radius: 48% 48% 0 0;
-    }
-    .spacer { background-color: purple; }
-    .spacer2 { background-color: blue; }
-    .spacer3 { background-color: #7AC269; }
-
-    .title {
-      width: 95%; opacity: 1; z-index: 4;
-      font-size: 140%; font-family: 'Aldrich', sans-serif;
-      color: white; position: relative; top: 35px; text-align: left;
-      text-shadow: 1px 1px yellow;
-    }
-
-    .videoWrapper { position: relative; width: 100%; background: black; overflow: hidden; }
-    .videoWrapper[data-aspect="169"] { padding-top: 56.25%; }
-    .videoWrapper[data-aspect="43"]  { padding-top: 75%; }
-
-    .videoIframe {
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%; background: black;
-    }
-
-    .sticker {
-      position: absolute; right: 2px; top: 11px; width: 84px;
-      opacity: .95; transform: rotate(3deg) scale(1);
-      transition: transform 0.4s cubic-bezier(.68,-0.55,.27,1.55); z-index: 2;
-    }
-
-    .big-play {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; z-index: 6; transition: opacity 0.3s;
-    }
-    .big-play.hidden { opacity: 0; pointer-events: none; }
-    .big-play svg {
-      fill: white; opacity: 0.95; width: 80px; height: 80px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); transition: transform 0.2s;
-    }
-    .big-play:hover svg { transform: scale(1.1); }
-
-    .yt-controls {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
-      padding: 6px; display: flex; align-items: center; gap: 10px;
-      opacity: 0; transition: opacity 0.3s; z-index: 5;
-    }
-    .videoWrapper:hover .yt-controls { opacity: 1; }
-
-    .yt-button { background: none; border: none; cursor: pointer; padding: 4px; }
-    .yt-button svg { pointer-events: none; }
-
-    .yt-progress {
-      flex: 1; height: 4px; background: #ccc; border-radius: 2px;
-      cursor: pointer; position: relative;
-    }
-    .yt-progress-fill {
-      position: absolute; top: 0; left: 0; height: 100%; width: 0;
-      background: red; border-radius: 2px;
-    }
-    .yt-progress-handle {
-      position: absolute; top: -4px; left: 0; width: 12px; height: 12px;
-      background: red; border-radius: 50%; transform: translateX(-50%);
-      pointer-events: none;
-    }
-
-    .yt-time { font-size: 22px; min-width: 60px; color: white; }
-
-    .yt-volume {
-      width: 70px; -webkit-appearance: none; appearance: none; background: transparent;
-    }
-    .yt-volume:focus { outline: none; }
-    .yt-volume::-webkit-slider-runnable-track {
-      height: 4px; border-radius: 2px;
-      background: linear-gradient(to right, red var(--val, 40%), #ccc var(--val, 40%));
-    }
-    .yt-volume::-moz-range-track { height: 4px; background: #ccc; border-radius: 2px; }
-    .yt-volume::-moz-range-progress { height: 4px; background: red; border-radius: 2px; }
-    .yt-volume::-webkit-slider-thumb {
-      -webkit-appearance: none; width: 12px; height: 12px;
-      border-radius: 50%; background: red; margin-top: -4px; cursor: pointer;
-    }
-    .yt-volume::-moz-range-thumb {
-      width: 12px; height: 12px; border-radius: 50%; background: red; border: none; cursor: pointer;
-    }
-  </style>
+<!-- Webamp (Winamp in JS) -->
+<script defer src="https://cdn.jsdelivr.net/npm/webamp@2.2.0/built/webamp.bundle.min.js"></script>
+<!-- Tag reader (OGG Vorbis comments, ID3, etc.) -->
+<script defer src="https://cdn.jsdelivr.net/npm/music-metadata-browser/dist/music-metadata-browser.min.js"></script>
 </head>
-
 <body>
-<main>
-  <section class="videoSection">
-    <div id="videoTitle" class="title">EPMD - Richter Scale</div>
-    <div id="videoSpacer" class="spacer spacer2"></div>
-    <div id="videoWrapper" class="videoWrapper" data-aspect="43">
-      <img class="sticker" src="https://archive.org/serve/1output-alpha/9hMDWSa.png" alt="Parental Advisory">
-      <video id="mainVideo" class="videoIframe" playsinline poster="https://i.imgur.com/TxicWJ9.jpeg">
-        <source id="mainSource" src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.mp4" type="video/mp4">
-      </video>
-
-      <div id="bigPlayOverlay" class="big-play">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
-      </div>
-
-      <div class="yt-controls">
-        <button id="playBtn" class="yt-button"></button>
-        <div class="yt-progress" id="progressBar">
-          <div class="yt-progress-fill" id="progressFill"></div>
-          <div class="yt-progress-handle" id="progressHandle"></div>
-        </div>
-        <span class="yt-time" id="timeDisplay">0:00 / 0:00</span>
-        <input type="range" id="volumeControl" class="yt-volume" min="0" max="1" step="0.05" value="0.4">
-        <button id="fsBtn" class="yt-button">⛶</button>
-      </div>
-    </div>
-  </section>
-</main>
-
-<div class="controls">
-  <button data-spacer="spacer" data-aspect="43"
-    data-src="https://archive.org/serve/ghostface_killah-daytona_500/daytona500.mp4"
-    data-poster="https://archive.org/serve/1output-alpha/GFKINFO.jpg"
-    data-title-extra="f/ Raekwon, Cappadonna & The Force MDs">Ghostface Killah – Daytona 500</button>
-
-  <button data-spacer="spacer2" data-aspect="43"
-    data-src="https://archive.org/serve/bone_crusher-never_scared_remix/BCREMIX_VIDEO.mp4"
-    data-poster="https://ia801007.us.archive.org/3/items/1output-alpha/BCINFO.jpg"
-    data-title-extra="f/ Cam'Ron, Jadakiss & Busta Rhymes">Bone Crusher – Never Scared (The Takeover Remix)</button>
-
-  <button data-spacer="spacer3" data-aspect="169"
-    data-src="https://archive.org/download/1output-alpha/Keith%20Murray%20featuring%20LL%20Cool%20J%20-%20Incredible.mp4"
-    data-poster="https://archive.org/serve/1output-alpha/KMINFO.jpg"
-    data-title-extra="ft. LL Cool J">Keith Murray – Incredible</button>
-
-  <button data-spacer="spacer" data-aspect="169"
-    data-src="https://archive.org/serve/outkast-elevators/Outkast%20-%20Elevators%20%28Me%20%26%20You%29%20.mp4"
-    data-poster="https://archive.org/serve/1output-alpha/OKCOVER.jpg"
-    data-vtt="./subtitles/outkast-elevators.vtt">Outkast – Elevators (Me & You)</button>
-
-  <button data-spacer="spacer2" data-aspect="43"
-    data-src="https://archive.org/serve/epmd-richter_scale/EPMD%20-%20Richter%20Scale%20%28Compressed%29.ia.mp4"
-    data-poster="https://archive.org/serve/1output-alpha/EPMDINFO.jpg">EPMD – Richter Scale</button>
-
-  <button data-spacer="spacer3" data-aspect="43"
-    data-src="https://archive.org/serve/mystikal-yall-aint-ready-yet/Mystikal%20-%20Y%27all%20Ain%27t%20Ready%20Yet%20%5B%5D.mp4"
-    data-poster="https://archive.org/serve/1output-alpha/MINFO.jpg">Mystikal – Yall Ain’t Ready Yet</button>
-
-  <button data-spacer="spacer2" data-aspect="43"
-    data-src="https://archive.org/serve/MCTHICKBRICKJUNGLE/MC%20Thick%20-%20From%20The%20Brick%20Jungle.ia.mp4"
-    data-poster="https://archive.org/download/MCTHICKBRICKJUNGLE/MCTHICKBRICKJUNGLE.thumbs/MC Thick - From The Brick Jungle_000148.jpg">MC Thick - From The Brick Jungle</button>
-
-  <button data-spacer="spacer" data-aspect="169"
-    data-src="https://archive.org/serve/beastie-boys-awesome-i-fuckin-shot-that/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21.mp4"
-    data-poster="https://archive.org/download/beastie-boys-awesome-i-fuckin-shot-that/beastie-boys-awesome-i-fuckin-shot-that.thumbs/Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21%2F01%20Beastie%20Boys%20%E2%80%93%20Awesome%3B%20I%20Fuckin%27%20Shot%20That%21_000310.jpg">Beastie Boys – Awesome; I Fuckin' Shot That!</button>
-
-  <button data-spacer="spacer2" data-aspect="43"
-    data-src="https://archive.org/serve/company_flow-end_to_end_burners/Company%20Flow%20-%20End%20To%20End%20Burners.ia.mp4"
-    data-poster="https://archive.org/download/company_flow-end_to_end_burners/company_flow-end_to_end_burners.thumbs/Company%20Flow%20-%20End%20To%20End%20Burners_000149.jpg">Company Flow - End To End Burners</button>
-</div>
+  <div id="webamp-anchor">
+    <div id="webamp-target"></div>
+  </div>
+  <div id="msg" aria-live="polite"></div>
 
 <script>
-const playIcon=`<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M8 5v14l11-7z"/></svg>`;
-const pauseIcon=`<svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+(async () => {
+  // ====== CONFIG ======
+  // Use your hosted music path (works locally too if it's the same domain):
+  const BASE_URL = "https://whateverpersists.com/music/";
+  // If you prefer local files in the repo instead, use:
+  // const BASE_URL = new URL("./music/", location.href).href;
 
-const mainVideo=document.getElementById("mainVideo");
-const playBtn=document.getElementById("playBtn");
-const progressFill=document.getElementById("progressFill");
-const progressHandle=document.getElementById("progressHandle");
-const timeDisplay=document.getElementById("timeDisplay");
-const volumeControl=document.getElementById("volumeControl");
-const fsBtn=document.getElementById("fsBtn");
-const progressBar=document.getElementById("progressBar");
-const bigPlayOverlay=document.getElementById("bigPlayOverlay");
+  const START_NUM = 1;         // 01.ogg
+  const END_NUM   = 18;        // ...18.ogg
+  const EXT       = ".ogg";
+  const SKIN_PATH = new URL("./skins/base-2.91.wsz", location.href).href; // self-hosted skin
 
-playBtn.innerHTML=playIcon;
+  const $msg = document.getElementById("msg");
+  const say = (t) => ($msg.innerHTML = t || "");
+  const waitForWebamp = () => new Promise(res=>{
+    const id = setInterval(()=>{ if (window.Webamp){ clearInterval(id); res(); }}, 25);
+  });
 
-bigPlayOverlay.addEventListener("click",()=>{mainVideo.play();});
-mainVideo.addEventListener("play",()=>{bigPlayOverlay.classList.add("hidden");playBtn.innerHTML=pauseIcon;});
-mainVideo.addEventListener("pause",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
-mainVideo.addEventListener("ended",()=>{bigPlayOverlay.classList.remove("hidden");playBtn.innerHTML=playIcon;});
+  // Clear any cached CDN skin so it won't try to re-fetch a broken URL
+  try {
+    Object.keys(localStorage).forEach(k => {
+      const lk = k.toLowerCase();
+      if (lk.includes("webamp") && (lk.includes("skin") || lk.includes("persist"))) {
+        localStorage.removeItem(k);
+      }
+    });
+  } catch {}
 
-playBtn.addEventListener("click",()=>{if(mainVideo.paused){mainVideo.play();}else{mainVideo.pause();}});
+  await waitForWebamp();
 
-mainVideo.addEventListener("timeupdate",()=>{
-  if(!mainVideo.duration)return;
-  const percent=(mainVideo.currentTime/mainVideo.duration)*100;
-  progressFill.style.width=percent+"%";
-  progressHandle.style.left=percent+"%";
-  timeDisplay.textContent=formatTime(mainVideo.currentTime)+" / "+formatTime(mainVideo.duration);
-});
-function formatTime(s){const m=Math.floor(s/60)||0;const sec=Math.floor(s%60)||0;return m+":"+(sec<10?"0"+sec:sec);}
-
-progressBar.addEventListener("click",e=>{
-  const r=progressBar.getBoundingClientRect();
-  const pos=(e.clientX-r.left)/r.width;
-  mainVideo.currentTime=pos*mainVideo.duration;
-});
-
-function updateVol(){volumeControl.style.setProperty("--val",(volumeControl.value*100)+"%");}
-volumeControl.addEventListener("input",()=>{mainVideo.volume=volumeControl.value;updateVol();});
-updateVol();
-
-fsBtn.addEventListener("click",()=>{if(document.fullscreenElement){document.exitFullscreen();}else{mainVideo.requestFullscreen?.();}});
-
-function adjustTitleSize(titleElement){
-  const text=titleElement.textContent.trim();
-  titleElement.style.fontSize=(text.length>50)?"90%":"140%";
-}
-
-function loadVideo(title,spacerClass,aspect,src,poster,vttFile){
-  const titleEl=document.getElementById("videoTitle");
-  titleEl.textContent=title;
-  adjustTitleSize(titleEl);
-  document.getElementById("videoSpacer").className="spacer "+spacerClass;
-  document.getElementById("videoWrapper").setAttribute("data-aspect",aspect);
-
-  const mainSource=document.getElementById("mainSource");
-  mainVideo.pause();
-  mainSource.src=src;
-  mainVideo.poster=poster;
-
-  playBtn.innerHTML=playIcon;
-
-  // reset and (optionally) add captions
-  mainVideo.querySelectorAll("track").forEach(t=>t.remove());
-  if(vttFile){
-    const track=document.createElement("track");
-    track.src=vttFile+"?t="+Date.now();
-    track.kind="subtitles";
-    track.srclang="en";
-    track.label="English";
-    track.default=true;
-    mainVideo.appendChild(track);
+  // Build 01..18 filenames
+  function buildList(start, end, ext) {
+    const arr = [];
+    for (let i = start; i <= end; i++) {
+      arr.push(String(i).padStart(2, "0") + ext);
+    }
+    return arr;
   }
 
-  mainVideo.load();
-  mainVideo.addEventListener("loadedmetadata",()=>{
-    for(let i=0;i<mainVideo.textTracks.length;i++){
-      mainVideo.textTracks[i].mode="showing";
-    }
-  }, {once:true});
+  // Helpers to read tags from remote URL; fallback to filename if CORS/parse fails
+  function basenameNoExt(u) {
+    const base = u.split("/").pop().split("?")[0].split("#")[0];
+    return base.replace(/\.[^.]+$/, "");
+  }
 
-  bigPlayOverlay.classList.remove("hidden");
-}
-
-function loadVideoFromButton(btn){
-  let title=btn.textContent.trim();
-  const extra=btn.dataset.titleExtra;
-  if(extra){
-    const parts=title.split("–");
-    if(parts.length>=2){
-      title=parts[0].trim()+" "+extra+" – "+parts.slice(1).join("–").trim();
-    }else{
-      title+=" "+extra;
+  async function readTagsFromUrl(url) {
+    try {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const blob = await res.blob();
+      const { parseBlob } = window.musicMetadata || {};
+      if (!parseBlob) throw new Error("music-metadata not ready");
+      const meta = await parseBlob(blob);
+      const c = (meta && meta.common) || {};
+      const t = c.track && (typeof c.track === "object" ? c.track.no : c.track);
+      const d = c.disk  && (typeof c.disk  === "object" ? c.disk.no  : c.disk);
+      return {
+        title: c.title || null,
+        artist: c.artist || c.albumartist || "",
+        track: (t!=null && !Number.isNaN(Number(t))) ? Number(t) : null,
+        disc:  (d!=null && !Number.isNaN(Number(d))) ? Number(d) : null
+      };
+    } catch {
+      return null; // title fallback to filename
     }
   }
-  const spacerClass=btn.dataset.spacer||"spacer";
-  const aspect=btn.dataset.aspect||"169";
-  const src=btn.dataset.src;
-  const poster=btn.dataset.poster;
-  const vttFile=btn.dataset.vtt||null;
-  loadVideo(title,spacerClass,aspect,src,poster,vttFile);
-}
 
-window.addEventListener("DOMContentLoaded",()=>{
-  const controls=document.querySelector(".controls");
-  const buttons=Array.from(controls.querySelectorAll("button"));
+  // Build track references with nice titles
+  const files = buildList(START_NUM, END_NUM, EXT);
+  const urls  = files.map(fn => new URL(fn, BASE_URL).href);
 
-  // Robust alphabetical sort: strip zero-width & NBSP chars, then compare
-  const cleanText = (el) =>
-    el.textContent
-      .replace(/[\u200B-\u200D\uFEFF\u00A0]/g,'')
-      .trim()
-      .toLowerCase();
+  say("Loading tracks…");
+  const refs = await Promise.all(urls.map(async (u) => {
+    const md = await readTagsFromUrl(u); // may be null if CORS/parse fails
+    const title  = (md && md.title)  || basenameNoExt(u);
+    const artist = (md && md.artist) || "";
+    return { url: u, defaultName: title, metaData: { title, artist } };
+  }));
 
-  buttons.sort((a,b)=> cleanText(a).localeCompare(cleanText(b)));
+  // Spin up Webamp, centered, with your local skin; keep EQ closed
+  const webamp = new Webamp({
+    enableHotkeys: true,
+    initialSkin: { url: SKIN_PATH },
+    __initialWindowLayout: {
+      main:     { position: { x: -150, y: -80 } },
+      playlist: { position: { x: -150, y:  40 }, size: [0, 4] }
+      // equalizer intentionally omitted
+    },
+    initialTracks: refs
+  });
 
-  // Re-append in sorted order
-  buttons.forEach(btn=>controls.appendChild(btn));
+  await webamp.renderWhenReady(document.getElementById("webamp-target"));
+  try { webamp.store.dispatch({ type: "CLOSE_WINDOW", windowId: "equalizer" }); } catch {}
 
-  // Wire up clicks
-  buttons.forEach(btn=>btn.addEventListener("click",()=>loadVideoFromButton(btn)));
-
-  // Load a random one on first paint (keep your behavior)
-  const randomBtn=buttons[Math.floor(Math.random()*buttons.length)];
-  loadVideoFromButton(randomBtn);
-});
+  // Optional: quickly warn if any URLs 404 (kept lightweight)
+  let missing = 0;
+  for (const r of refs) {
+    try {
+      const head = await fetch(r.url, { method: "HEAD", cache: "no-store" });
+      if (!head.ok) { missing++; console.warn("Missing:", r.url, head.status); }
+    } catch (e) { missing++; console.warn("Error:", r.url, e); }
+  }
+  say(missing ? `Loaded ${refs.length - missing}/${refs.length}. Some files are missing or blocked (see console).`
+              : `Loaded ${refs.length} tracks from <code>${BASE_URL}</code>. Click to hide.`);
+  $msg.onclick = () => say("");
+})();
 </script>
 </body>
 </html>
