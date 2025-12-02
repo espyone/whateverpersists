@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Whatever Persists Dec 2025 Mix</title>
+<title>APlayer – M3U + Covers + Producer</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
 
@@ -43,13 +43,13 @@
     border: 1px solid #ddd !important;
   }
 
-  /* Top bar (now playing) title text */
+  /* We override the title content ourselves */
   .aplayer-title {
     color: #000 !important;
     font-weight: 600 !important;
   }
 
-  /* We’ll hide the built-in author text and control it ourselves */
+  /* Hide default author text – we fold it into the title line */
   .aplayer-author {
     display: none !important;
   }
@@ -71,6 +71,31 @@
   }
   .aplayer-list li.aplayer-list-light {
     background-color: #1db95422 !important;
+  }
+
+  /* ---------- Now Playing typography ---------- */
+
+  /* Title (big, black) */
+  .now-title {
+    color: #000 !important;
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  /* Artist (dark gray, smaller) */
+  .now-artist {
+    color: #333 !important; /* ~20% lighter than black */
+    font-size: 16px;        /* smaller than title */
+    font-weight: 500;
+    margin-left: 8px;
+  }
+
+  /* Producer info (blue, smallest) */
+  .now-producer {
+    color: #3182ff !important;
+    font-size: 14px;        /* smaller than artist */
+    font-weight: 600;
+    margin-left: 8px;
   }
 </style>
 </head>
@@ -213,26 +238,30 @@
     tracks = fallbackTracks();
   }
 
-  // Build audio list for APlayer, plus a display string for now-playing
-  const audioList = tracks.map(t => {
-    let display;
-    if (t.producer) {
-      if (t.artist) {
-        display = `${t.title}   ${t.artist} (Producer: ${t.producer})`;
-      } else {
-        display = `${t.title} (Producer: ${t.producer})`;
-      }
-    } else {
-      display = t.artist ? `${t.title}   ${t.artist}` : t.title;
+  // Build formatted HTML display for Now Playing
+  function formatDisplay(t) {
+    const titleHTML  = `<span class="now-title">${t.title}</span>`;
+    let artistHTML   = "";
+    let producerHTML = "";
+
+    if (t.artist) {
+      artistHTML = `<span class="now-artist">${t.artist}</span>`;
     }
-    return {
-      name: t.title,        // title only for playlist
-      artist: t.artist,     // shows in right column
-      url: t.url,
-      cover: t.cover,
-      display
-    };
-  });
+    if (t.producer) {
+      producerHTML = `<span class="now-producer">(Producer: ${t.producer})</span>`;
+    }
+
+    return `${titleHTML} ${artistHTML} ${producerHTML}`;
+  }
+
+  // Build audio list for APlayer, with extra displayHTML field
+  const audioList = tracks.map(t => ({
+    name: t.title,        // playlist left column
+    artist: t.artist,     // playlist right column
+    url: t.url,
+    cover: t.cover,
+    displayHTML: formatDisplay(t)
+  }));
 
   const ap = new APlayer({
     container: document.getElementById('aplayer'),
@@ -243,22 +272,20 @@
     order: 'list',
     listFolded: false,
     lrcType: 0,
-    audio: audioList
+    audio: audioList  // APlayer ignores extra fields like displayHTML
   });
 
-  // Override the Now Playing bar text to: "Title   Artist (Producer: X)"
+  // Override the Now Playing bar content using displayHTML
   function refreshNowPlaying() {
     const idx = ap.list.index;
     const track = audioList[idx];
-    const titleEl  = document.querySelector('.aplayer-title');
+    const titleEl = document.querySelector('.aplayer-title');
     if (!titleEl || !track) return;
-    titleEl.textContent = track.display;
+    titleEl.innerHTML = track.displayHTML;
   }
 
   ap.on('play', refreshNowPlaying);
   ap.on('listswitch', refreshNowPlaying);
-
-  // Initial set once player is ready
   ap.on('loadedmetadata', refreshNowPlaying);
 
   status("Ready.");
