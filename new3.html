@@ -3,9 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>DSP-style Player – APlayer + M3U + Cover Art</title>
+<title>APlayer – M3U + Covers</title>
 
-<!-- APlayer CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
 
 <style>
@@ -27,33 +26,10 @@
     border-radius: 16px;
     box-shadow: 0 6px 24px rgba(0,0,0,.45);
   }
-  header {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 20px;
-    align-items: center;
-    margin-bottom: 16px;
-  }
-  .cover {
-    width: 140px;
-    height: 140px;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #1f1f1f center/cover no-repeat;
-    border: 1px solid #2b2b2b;
-  }
-  .meta h1 {
-    margin: 0;
-    font-size: 1.4rem;
-  }
-  .meta p {
-    margin: 6px 0 0;
-    opacity: .7;
-    font-size: .95rem;
-  }
-  #aplayer {
-    margin-top: 12px;
-  }
+
+  /* APlayer sits alone now, no header/meta text */
+  #aplayer { margin-top: 0; }
+
   .status {
     margin-top: 10px;
     font-size: 12px;
@@ -64,34 +40,62 @@
     padding:0 4px;
     border-radius:3px;
   }
+
+  /* ---------- APlayer color tweaks ---------- */
+
+  /* Main player background */
+  .aplayer {
+    background-color: #f9f9f9 !important;
+    border-radius: 12px !important;
+    border: 1px solid #ddd !important;
+  }
+
+  /* Top bar title (now playing) */
+  .aplayer-title {
+    color: #000 !important;          /* black title */
+    font-weight: 600 !important;
+  }
+
+  /* Playlist row titles */
+  .aplayer-list-title {
+    color: #000 !important;          /* black track titles in list */
+    font-weight: 500 !important;
+  }
+
+  /* Playlist row artists */
+  .aplayer-list-author {
+    color: #444 !important;
+  }
+
+  /* Producer highlight (the bit between -= and =-) */
+  .producer {
+    color: #3182ff !important;       /* blue producer text */
+    font-weight: 600 !important;
+  }
+
+  /* Keep the green accent (you can change this) */
+  .aplayer-bar .aplayer-played {
+    background-color: #1db954 !important;
+  }
+  .aplayer-list li.aplayer-list-light {
+    background-color: #1db95422 !important;
+  }
 </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div id="cover" class="cover"></div>
-      <div class="meta">
-        <h1>My M3U Playlist</h1>
-        <p>Loaded from <code>music/playlist.m3u</code> (or <code>playlist.m3u8</code>) with per-track artwork.</p>
-      </div>
-    </header>
     <div id="aplayer"></div>
     <div id="status" class="status">Loading…</div>
   </div>
 
-<!-- APlayer JS -->
 <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
 
 <script>
 (async () => {
   const status = (t) => { document.getElementById('status').textContent = t || ""; };
 
-  // Base directories (relative to index.html)
   const MUSIC_DIR     = new URL("./music/", location.href);
   const DEFAULT_COVER = new URL("cover_default.jpg", MUSIC_DIR).href;
-
-  // Set big header cover to default
-  document.getElementById('cover').style.backgroundImage = `url("${DEFAULT_COVER}")`;
 
   async function fetchText(url) {
     try {
@@ -103,12 +107,8 @@
     }
   }
 
-  // Parse M3U/M3U8:
-  //   #EXTINF:0,Artist1 & Artist2 - Track Title (prod. X)
-  //   #EXTIMG:somecover.jpg
-  //   next non-comment line = audio path
-  //
-  // Returns: [{ name, artist, url, cover }]
+  // Parse M3U / M3U8 with #EXTINF + #EXTIMG
+  // Returns array of { name, artist, url, cover }
   function parseM3UWithCovers(txt, baseUrl, defaultCover) {
     const out = [];
     const lines = txt.split(/\r?\n/);
@@ -119,7 +119,7 @@
       const line = raw.trim();
       if (!line) continue;
 
-      // #EXTINF
+      // #EXTINF:0,Artist - Title (whatever)
       if (line.toUpperCase().startsWith("#EXTINF:")) {
         const m = line.match(/^#EXTINF:[^,]*,(.*)$/i);
         const info = (m ? m[1] : "").trim();
@@ -138,7 +138,7 @@
         continue;
       }
 
-      // #EXTIMG
+      // #EXTIMG:cover-file.jpg (relative to music/)
       if (line.toUpperCase().startsWith("#EXTIMG:")) {
         const imgPath = line.replace(/^#EXTIMG:/i, "").trim();
         if (imgPath) {
@@ -147,15 +147,14 @@
         continue;
       }
 
-      // Other comments
       if (line.startsWith("#")) {
-        continue;
+        continue; // other comments
       }
 
       // Audio path
-      const audioUrl  = new URL(line, baseUrl).href;
-      const baseName  = line.split("/").pop();
-      const fallback  = baseName.replace(/\.[^.]+$/, "");
+      const audioUrl = new URL(line, baseUrl).href;
+      const baseName = line.split("/").pop();
+      const fallback = baseName.replace(/\.[^.]+$/, "");
 
       out.push({
         name:   pending.title  || fallback,
@@ -164,14 +163,13 @@
         cover:  pending.cover  || defaultCover
       });
 
-      // Reset for next track
       pending = { title: null, artist: null, cover: null };
     }
 
     return out;
   }
 
-  // Fallback: 01.ogg..18.ogg with default cover
+  // Fallback 01.ogg..18.ogg
   function fallbackTracks(count = 18, ext = ".ogg", baseUrl = MUSIC_DIR, defaultCover = DEFAULT_COVER) {
     const arr = [];
     for (let i = 1; i <= count; i++) {
@@ -208,27 +206,24 @@
     tracks = fallbackTracks();
   }
 
-  // Use first track’s cover for big header image, if available
-  if (tracks[0] && tracks[0].cover) {
-    document.getElementById('cover').style.backgroundImage = `url("${tracks[0].cover}")`;
-  }
+  // When sending titles to APlayer, wrap producer section (-=...=-) so it can be blue
+  const audioList = tracks.map(t => ({
+    name: t.name.replace(/-\=([^=]+)=-/g, '-=<span class="producer">$1</span>=-'),
+    artist: t.artist,
+    url: t.url,
+    cover: t.cover
+  }));
 
-  // Initialize APlayer
   const ap = new APlayer({
     container: document.getElementById('aplayer'),
     fixed: false,
     autoplay: false,
-    theme: '#1db954',
+    theme: '#1db954',    // green progress / highlight
     loop: 'all',
     order: 'list',
     listFolded: false,
     lrcType: 0,
-    audio: tracks.map(t => ({
-      name: t.name,     // title (you can include producer text here)
-      artist: t.artist, // "Boldy James & Lukah", etc.
-      url: t.url,
-      cover: t.cover
-    }))
+    audio: audioList
   });
 
   status("Ready.");
