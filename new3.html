@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>APlayer – M3U + Covers</title>
+<title>Whatever Persists Dec 2025 Mix</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
 
@@ -27,7 +27,6 @@
     box-shadow: 0 6px 24px rgba(0,0,0,.45);
   }
 
-  /* APlayer sits alone now, no header/meta text */
   #aplayer { margin-top: 0; }
 
   .status {
@@ -35,30 +34,29 @@
     font-size: 12px;
     opacity: .8;
   }
-  code {
-    background:#1c1c1c;
-    padding:0 4px;
-    border-radius:3px;
-  }
 
   /* ---------- APlayer color tweaks ---------- */
 
-  /* Main player background */
   .aplayer {
     background-color: #f9f9f9 !important;
     border-radius: 12px !important;
     border: 1px solid #ddd !important;
   }
 
-  /* Top bar title (now playing) */
+  /* Top bar (now playing) title text */
   .aplayer-title {
-    color: #000 !important;          /* black title */
+    color: #000 !important;
     font-weight: 600 !important;
+  }
+
+  /* We’ll hide the built-in author text and control it ourselves */
+  .aplayer-author {
+    display: none !important;
   }
 
   /* Playlist row titles */
   .aplayer-list-title {
-    color: #000 !important;          /* black track titles in list */
+    color: #000 !important;
     font-weight: 500 !important;
   }
 
@@ -67,13 +65,7 @@
     color: #444 !important;
   }
 
-  /* Producer highlight (the bit between -= and =-) */
-  .producer {
-    color: #3182ff !important;       /* blue producer text */
-    font-weight: 600 !important;
-  }
-
-  /* Keep the green accent (you can change this) */
+  /* Progress bar + active row tint */
   .aplayer-bar .aplayer-played {
     background-color: #1db954 !important;
   }
@@ -107,38 +99,51 @@
     }
   }
 
-  // Parse M3U / M3U8 with #EXTINF + #EXTIMG
-  // Returns array of { name, artist, url, cover }
-  function parseM3UWithCovers(txt, baseUrl, defaultCover) {
+  // Parse M3U / M3U8:
+  //   #EXTINF:0,Artist - Title -=Producer=-
+  //   #EXTIMG:cover.jpg
+  //   <audio path>
+  //
+  // Returns array of { title, artist, producer, url, cover }
+  function parseM3UWithCoversAndProducer(txt, baseUrl, defaultCover) {
     const out = [];
     const lines = txt.split(/\r?\n/);
-    let pending = { title: null, artist: null, cover: null };
+    let pending = { title: null, artist: null, cover: null, producer: null };
 
     for (let raw of lines) {
       if (!raw) continue;
       const line = raw.trim();
       if (!line) continue;
 
-      // #EXTINF:0,Artist - Title (whatever)
+      // #EXTINF line
       if (line.toUpperCase().startsWith("#EXTINF:")) {
         const m = line.match(/^#EXTINF:[^,]*,(.*)$/i);
         const info = (m ? m[1] : "").trim();
 
-        let artist = "";
-        let title  = info;
+        let artist   = "";
+        let titleRaw = info;
 
         const dashIdx = info.indexOf(" - ");
         if (dashIdx > -1) {
-          artist = info.slice(0, dashIdx).trim();
-          title  = info.slice(dashIdx + 3).trim();
+          artist   = info.slice(0, dashIdx).trim();
+          titleRaw = info.slice(dashIdx + 3).trim();
         }
 
-        pending.title  = title  || null;
-        pending.artist = artist || "";
+        // Producer inside -= ... =-
+        let producer = null;
+        const pm = titleRaw.match(/-\=([^=]+)=-/);
+        if (pm) {
+          producer = pm[1].trim();
+          titleRaw = titleRaw.replace(/-\=[^=]+=-/, "").trim();
+        }
+
+        pending.title    = titleRaw || null;
+        pending.artist   = artist   || "";
+        pending.producer = producer || null;
         continue;
       }
 
-      // #EXTIMG:cover-file.jpg (relative to music/)
+      // #EXTIMG line
       if (line.toUpperCase().startsWith("#EXTIMG:")) {
         const imgPath = line.replace(/^#EXTIMG:/i, "").trim();
         if (imgPath) {
@@ -147,36 +152,38 @@
         continue;
       }
 
-      if (line.startsWith("#")) {
-        continue; // other comments
-      }
+      // Other comments
+      if (line.startsWith("#")) continue;
 
-      // Audio path
+      // Audio path line
       const audioUrl = new URL(line, baseUrl).href;
       const baseName = line.split("/").pop();
-      const fallback = baseName.replace(/\.[^.]+$/, "");
+      const fallbackTitle = baseName.replace(/\.[^.]+$/, "");
 
       out.push({
-        name:   pending.title  || fallback,
-        artist: pending.artist || "",
-        url:    audioUrl,
-        cover:  pending.cover  || defaultCover
+        title:    pending.title    || fallbackTitle,
+        artist:   pending.artist   || "",
+        producer: pending.producer || null,
+        url:      audioUrl,
+        cover:    pending.cover    || defaultCover
       });
 
-      pending = { title: null, artist: null, cover: null };
+      // reset for next track
+      pending = { title: null, artist: null, cover: null, producer: null };
     }
 
     return out;
   }
 
-  // Fallback 01.ogg..18.ogg
+  // Fallback 01.ogg..18.ogg without producer
   function fallbackTracks(count = 18, ext = ".ogg", baseUrl = MUSIC_DIR, defaultCover = DEFAULT_COVER) {
     const arr = [];
     for (let i = 1; i <= count; i++) {
       const fn = String(i).padStart(2, "0") + ext;
       arr.push({
-        name: fn.replace(/\.[^.]+$/, ""),
+        title: fn.replace(/\.[^.]+$/, ""),
         artist: "",
+        producer: null,
         url: new URL(fn, baseUrl).href,
         cover: defaultCover
       });
@@ -194,7 +201,7 @@
 
   let tracks = [];
   if (text) {
-    tracks = parseM3UWithCovers(text, MUSIC_DIR, DEFAULT_COVER);
+    tracks = parseM3UWithCoversAndProducer(text, MUSIC_DIR, DEFAULT_COVER);
     if (!tracks.length) {
       status("Playlist found but empty or malformed; using fallback 01..18.");
       tracks = fallbackTracks();
@@ -206,25 +213,53 @@
     tracks = fallbackTracks();
   }
 
-  // When sending titles to APlayer, wrap producer section (-=...=-) so it can be blue
-  const audioList = tracks.map(t => ({
-    name: t.name.replace(/-\=([^=]+)=-/g, '-=<span class="producer">$1</span>=-'),
-    artist: t.artist,
-    url: t.url,
-    cover: t.cover
-  }));
+  // Build audio list for APlayer, plus a display string for now-playing
+  const audioList = tracks.map(t => {
+    let display;
+    if (t.producer) {
+      if (t.artist) {
+        display = `${t.title}   ${t.artist} (Producer: ${t.producer})`;
+      } else {
+        display = `${t.title} (Producer: ${t.producer})`;
+      }
+    } else {
+      display = t.artist ? `${t.title}   ${t.artist}` : t.title;
+    }
+    return {
+      name: t.title,        // title only for playlist
+      artist: t.artist,     // shows in right column
+      url: t.url,
+      cover: t.cover,
+      display
+    };
+  });
 
   const ap = new APlayer({
     container: document.getElementById('aplayer'),
     fixed: false,
     autoplay: false,
-    theme: '#1db954',    // green progress / highlight
+    theme: '#1db954',
     loop: 'all',
     order: 'list',
     listFolded: false,
     lrcType: 0,
     audio: audioList
   });
+
+  // Override the Now Playing bar text to: "Title   Artist (Producer: X)"
+  function refreshNowPlaying() {
+    const idx = ap.list.index;
+    const track = audioList[idx];
+    const titleEl  = document.querySelector('.aplayer-title');
+    if (!titleEl || !track) return;
+    titleEl.textContent = track.display;
+  }
+
+  ap.on('play', refreshNowPlaying);
+  ap.on('listswitch', refreshNowPlaying);
+
+  // Initial set once player is ready
+  ap.on('loadedmetadata', refreshNowPlaying);
 
   status("Ready.");
 })();
