@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Whatever Persists Dec 2025 Mix</title>
+<title>APlayer – M3U + Covers + Producer</title>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
 
@@ -43,7 +43,7 @@
     border: 1px solid #ddd !important;
   }
 
-  /* We override the title content ourselves and let it wrap */
+  /* Allow Now Playing to wrap */
   .aplayer-title {
     color: #000 !important;
     font-weight: 600 !important;
@@ -52,18 +52,16 @@
     text-overflow: clip !important;
   }
 
-  /* Hide default author text – we fold it into the title line */
+  /* Hide default author text */
   .aplayer-author {
     display: none !important;
   }
 
-  /* Playlist row titles */
+  /* Playlist columns */
   .aplayer-list-title {
     color: #000 !important;
     font-weight: 500 !important;
   }
-
-  /* Playlist row artists */
   .aplayer-list-author {
     color: #444 !important;
   }
@@ -76,36 +74,34 @@
     background-color: #1db95422 !important;
   }
 
-  /* ---------- Now Playing typography ---------- */
+  /* ---------- Now Playing typography (desktop) ---------- */
 
-  /* Title (big, black) */
   .now-title {
     color: #000 !important;
     font-size: 15px;
     font-weight: 700;
   }
 
-  /* Artist (dark gray, smaller) */
   .now-artist {
-    color: #333 !important;    /* ~20% lighter than black */
-    font-size: 14px;           /* just below title */
+    color: #333 !important;
+    font-size: 14px;
     font-weight: 500;
     margin-left: 8px;
   }
 
-  /* Producer info (blue, smallest) */
   .now-producer {
     color: #3182ff !important;
-    font-size: 11px;           /* ~20% smaller than artist */
+    font-size: 11px;
     font-weight: 600;
     margin-left: 8px;
   }
 
-  /* -------- Mobile tweaks -------- */
+  /* -------- Mobile tweaks (1/3 size) -------- */
   @media (max-width: 600px) {
+
     .wrap {
       width: 100vw;
-      padding: 12px;
+      padding: 10px;
       border-radius: 0;
     }
 
@@ -113,29 +109,25 @@
       border-radius: 8px !important;
     }
 
-    /* Let the now-playing text wrap and stack nicely */
     .aplayer-title {
-      display: block;
-      line-height: 1.25;
+      display: block !important;
+      line-height: 1.2 !important;
+      white-space: normal !important;
     }
 
-    /* Title slightly smaller on phones, own line */
+    /* Shrink all Now-Playing fonts to 1/3 */
     .now-title {
-      font-size: 14px;
+      font-size: 5px !important;     /* 15px → ~1/3 */
       display: block;
     }
-
-    /* Artist on its own line, smaller */
     .now-artist {
-      font-size: 12px;
+      font-size: 4.5px !important;   /* 14px → ~1/3 */
       display: block;
       margin-left: 0;
       margin-top: 2px;
     }
-
-    /* Producer on its own line, smallest */
     .now-producer {
-      font-size: 10px;
+      font-size: 3.5px !important;   /* 11px → ~1/3 */
       display: block;
       margin-left: 0;
       margin-top: 1px;
@@ -168,12 +160,7 @@
     }
   }
 
-  // Parse M3U / M3U8:
-  //   #EXTINF:0,Artist - Title -=Producer=-
-  //   #EXTIMG:cover.jpg
-  //   <audio path>
-  //
-  // Returns array of { title, artist, producer, url, cover }
+  // Parse M3U with producer + cover
   function parseM3UWithCoversAndProducer(txt, baseUrl, defaultCover) {
     const out = [];
     const lines = txt.split(/\r?\n/);
@@ -184,21 +171,20 @@
       const line = raw.trim();
       if (!line) continue;
 
-      // #EXTINF line
       if (line.toUpperCase().startsWith("#EXTINF:")) {
         const m = line.match(/^#EXTINF:[^,]*,(.*)$/i);
         const info = (m ? m[1] : "").trim();
 
         let artist   = "";
         let titleRaw = info;
-
         const dashIdx = info.indexOf(" - ");
+
         if (dashIdx > -1) {
           artist   = info.slice(0, dashIdx).trim();
           titleRaw = info.slice(dashIdx + 3).trim();
         }
 
-        // Producer inside -= ... =-
+        // Producer -=X=- pattern
         let producer = null;
         const pm = titleRaw.match(/-\=([^=]+)=-/);
         if (pm) {
@@ -212,40 +198,33 @@
         continue;
       }
 
-      // #EXTIMG line
       if (line.toUpperCase().startsWith("#EXTIMG:")) {
         const imgPath = line.replace(/^#EXTIMG:/i, "").trim();
-        if (imgPath) {
-          pending.cover = new URL(imgPath, baseUrl).href;
-        }
+        if (imgPath) pending.cover = new URL(imgPath, baseUrl).href;
         continue;
       }
 
-      // Other comments
       if (line.startsWith("#")) continue;
 
-      // Audio path line
+      // Audio file
       const audioUrl = new URL(line, baseUrl).href;
-      const baseName = line.split("/").pop();
-      const fallbackTitle = baseName.replace(/\.[^.]+$/, "");
+      const fallback = line.split("/").pop().replace(/\.[^.]+$/, "");
 
       out.push({
-        title:    pending.title    || fallbackTitle,
+        title:    pending.title    || fallback,
         artist:   pending.artist   || "",
         producer: pending.producer || null,
         url:      audioUrl,
         cover:    pending.cover    || defaultCover
       });
 
-      // reset for next track
       pending = { title: null, artist: null, cover: null, producer: null };
     }
 
     return out;
   }
 
-  // Fallback 01.ogg..18.ogg without producer
-  function fallbackTracks(count = 18, ext = ".ogg", baseUrl = MUSIC_DIR, defaultCover = DEFAULT_COVER) {
+  function fallbackTracks(count = 18, ext = ".ogg") {
     const arr = [];
     for (let i = 1; i <= count; i++) {
       const fn = String(i).padStart(2, "0") + ext;
@@ -253,55 +232,35 @@
         title: fn.replace(/\.[^.]+$/, ""),
         artist: "",
         producer: null,
-        url: new URL(fn, baseUrl).href,
-        cover: defaultCover
+        url: new URL(fn, MUSIC_DIR).href,
+        cover: DEFAULT_COVER
       });
     }
     return arr;
   }
 
-  // Load playlist or fallback
-  status("Looking for music/playlist.m3u…");
-  let text = await fetchText(new URL("playlist.m3u", MUSIC_DIR).href);
-  if (!text) {
-    status("Looking for music/playlist.m3u8…");
-    text = await fetchText(new URL("playlist.m3u8", MUSIC_DIR).href);
-  }
+  status("Looking for playlist…");
 
-  let tracks = [];
-  if (text) {
-    tracks = parseM3UWithCoversAndProducer(text, MUSIC_DIR, DEFAULT_COVER);
-    if (!tracks.length) {
-      status("Playlist found but empty or malformed; using fallback 01..18.");
-      tracks = fallbackTracks();
-    } else {
-      status(`Loaded ${tracks.length} track(s) from playlist.`);
-    }
-  } else {
-    status("No playlist found; using fallback 01..18.");
-    tracks = fallbackTracks();
-  }
+  let text = await fetchText(new URL("playlist.m3u", MUSIC_DIR));
+  if (!text) text = await fetchText(new URL("playlist.m3u8", MUSIC_DIR));
 
-  // Build formatted HTML display for Now Playing
+  let tracks = text
+    ? parseM3UWithCoversAndProducer(text, MUSIC_DIR, DEFAULT_COVER)
+    : fallbackTracks();
+
+  if (!tracks.length) tracks = fallbackTracks();
+
+  // Build Now Playing HTML from parsed track
   function formatDisplay(t) {
     const titleHTML  = `<span class="now-title">${t.title}</span>`;
-    let artistHTML   = "";
-    let producerHTML = "";
-
-    if (t.artist) {
-      artistHTML = `<span class="now-artist">${t.artist}</span>`;
-    }
-    if (t.producer) {
-      producerHTML = `<span class="now-producer">(${t.producer})</span>`;
-    }
-
-    return `${titleHTML} ${artistHTML} ${producerHTML}`;
+    const artistHTML = t.artist   ? `<span class="now-artist">${t.artist}</span>` : "";
+    const prodHTML   = t.producer ? `<span class="now-producer">(${t.producer})</span>` : "";
+    return `${titleHTML} ${artistHTML} ${prodHTML}`;
   }
 
-  // Build audio list for APlayer, with extra displayHTML field
   const audioList = tracks.map(t => ({
-    name: t.title,        // playlist left column
-    artist: t.artist,     // playlist right column
+    name: t.title,
+    artist: t.artist,
     url: t.url,
     cover: t.cover,
     displayHTML: formatDisplay(t)
@@ -316,23 +275,21 @@
     order: 'list',
     listFolded: false,
     lrcType: 0,
-    audio: audioList  // APlayer ignores extra fields like displayHTML
+    audio: audioList
   });
 
-  // Override the Now Playing bar content using displayHTML
   function refreshNowPlaying() {
     const idx = ap.list.index;
     const track = audioList[idx];
     const titleEl = document.querySelector('.aplayer-title');
-    if (!titleEl || !track) return;
-    titleEl.innerHTML = track.displayHTML;
+    if (titleEl && track) titleEl.innerHTML = track.displayHTML;
   }
 
   ap.on('play', refreshNowPlaying);
   ap.on('listswitch', refreshNowPlaying);
   ap.on('loadedmetadata', refreshNowPlaying);
 
-  status(" ");
+  status("Ready.");
 })();
 </script>
 </body>
