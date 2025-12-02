@@ -43,10 +43,13 @@
     border: 1px solid #ddd !important;
   }
 
-  /* We override the title content ourselves */
+  /* We override the title content ourselves and let it wrap */
   .aplayer-title {
     color: #000 !important;
     font-weight: 600 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
   }
 
   /* Hide default author text – we fold it into the title line */
@@ -84,19 +87,60 @@
 
   /* Artist (dark gray, smaller) */
   .now-artist {
-    color: #333 !important; /* ~20% lighter than black */
-    font-size: 14px;        /* smaller than title */
+    color: #333 !important;    /* ~20% lighter than black */
+    font-size: 14px;           /* just below title */
     font-weight: 500;
     margin-left: 8px;
   }
 
   /* Producer info (blue, smallest) */
   .now-producer {
-  color: #3182ff !important;
-  font-size: 16px;        /* was 14px → now 20% smaller */
-  font-weight: 600;
-  margin-left: 8px;
-}
+    color: #3182ff !important;
+    font-size: 11px;           /* ~20% smaller than artist */
+    font-weight: 600;
+    margin-left: 8px;
+  }
+
+  /* -------- Mobile tweaks -------- */
+  @media (max-width: 600px) {
+    .wrap {
+      width: 100vw;
+      padding: 12px;
+      border-radius: 0;
+    }
+
+    .aplayer {
+      border-radius: 8px !important;
+    }
+
+    /* Let the now-playing text wrap and stack nicely */
+    .aplayer-title {
+      display: block;
+      line-height: 1.25;
+    }
+
+    /* Title slightly smaller on phones, own line */
+    .now-title {
+      font-size: 14px;
+      display: block;
+    }
+
+    /* Artist on its own line, smaller */
+    .now-artist {
+      font-size: 12px;
+      display: block;
+      margin-left: 0;
+      margin-top: 2px;
+    }
+
+    /* Producer on its own line, smallest */
+    .now-producer {
+      font-size: 10px;
+      display: block;
+      margin-left: 0;
+      margin-top: 1px;
+    }
+  }
 </style>
 </head>
 <body>
@@ -288,7 +332,7 @@
   ap.on('listswitch', refreshNowPlaying);
   ap.on('loadedmetadata', refreshNowPlaying);
 
-  status("Ready.");
+  status(" ");
 })();
 </script>
 </body>
