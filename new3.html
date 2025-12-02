@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>DSP-style Player – APlayer + M3U + Cover Art</title>
+
+<!-- APlayer CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0;
+    background: #0b0b0b;
+    color: #e6e6e6;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+  }
+  .wrap {
+    width: min(900px, 92vw);
+    padding: 24px;
+    background: #121212;
+    border: 1px solid #242424;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.45);
+  }
+  header {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .cover {
+    width: 140px;
+    height: 140px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1f1f1f center/cover no-repeat;
+    border: 1px solid #2b2b2b;
+  }
+  .meta h1 {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+  .meta p {
+    margin: 6px 0 0;
+    opacity: .7;
+    font-size: .95rem;
+  }
+  #aplayer {
+    margin-top: 12px;
+  }
+  .status {
+    margin-top: 10px;
+    font-size: 12px;
+    opacity: .8;
+  }
+  code {
+    background:#1c1c1c;
+    padding:0 4px;
+    border-radius:3px;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div id="cover" class="cover"></div>
+      <div class="meta">
+        <h1>My M3U Playlist</h1>
+        <p>Loaded from <code>music/playlist.m3u</code> (or <code>playlist.m3u8</code>) with per-track artwork.</p>
+      </div>
+    </header>
+    <div id="aplayer"></div>
+    <div id="status" class="status">Loading…</div>
+  </div>
+
+<!-- APlayer JS -->
+<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+
+<script>
+(async () => {
+  const status = (t) => { document.getElementById('status').textContent = t || ""; };
+
+  // Base directories (relative to index.html)
+  const MUSIC_DIR     = new URL("./music/", location.href);
+  const DEFAULT_COVER = new URL("cover_default.jpg", MUSIC_DIR).href;
+
+  // Set big header cover to default
+  document.getElementById('cover').style.backgroundImage = `url("${DEFAULT_COVER}")`;
+
+  async function fetchText(url) {
+    try {
+      const r = await fetch(url, { cache: "no-store" });
+      if (!r.ok) return null;
+      return await r.text();
+    } catch {
+      return null;
+    }
+  }
+
+  // Parse M3U/M3U8:
+  //   #EXTINF:0,Artist1 & Artist2 - Track Title (prod. X)
+  //   #EXTIMG:somecover.jpg
+  //   next non-comment line = audio path
+  //
+  // Returns: [{ name, artist, url, cover }]
+  function parseM3UWithCovers(txt, baseUrl, defaultCover) {
+    const out = [];
+    const lines = txt.split(/\r?\n/);
+    let pending = { title: null, artist: null, cover: null };
+
+    for (let raw of lines) {
+      if (!raw) continue;
+      const line = raw.trim();
+      if (!line) continue;
+
+      // #EXTINF
+      if (line.toUpperCase().startsWith("#EXTINF:")) {
+        const m = line.match(/^#EXTINF:[^,]*,(.*)$/i);
+        const info = (m ? m[1] : "").trim();
+
+        let artist = "";
+        let title  = info;
+
+        const dashIdx = info.indexOf(" - ");
+        if (dashIdx > -1) {
+          artist = info.slice(0, dashIdx).trim();
+          title  = info.slice(dashIdx + 3).trim();
+        }
+
+        pending.title  = title  || null;
+        pending.artist = artist || "";
+        continue;
+      }
+
+      // #EXTIMG
+      if (line.toUpperCase().startsWith("#EXTIMG:")) {
+        const imgPath = line.replace(/^#EXTIMG:/i, "").trim();
+        if (imgPath) {
+          pending.cover = new URL(imgPath, baseUrl).href;
+        }
+        continue;
+      }
+
+      // Other comments
+      if (line.startsWith("#")) {
+        continue;
+      }
+
+      // Audio path
+      const audioUrl  = new URL(line, baseUrl).href;
+      const baseName  = line.split("/").pop();
+      const fallback  = baseName.replace(/\.[^.]+$/, "");
+
+      out.push({
+        name:   pending.title  || fallback,
+        artist: pending.artist || "",
+        url:    audioUrl,
+        cover:  pending.cover  || defaultCover
+      });
+
+      // Reset for next track
+      pending = { title: null, artist: null, cover: null };
+    }
+
+    return out;
+  }
+
+  // Fallback: 01.ogg..18.ogg with default cover
+  function fallbackTracks(count = 18, ext = ".ogg", baseUrl = MUSIC_DIR, defaultCover = DEFAULT_COVER) {
+    const arr = [];
+    for (let i = 1; i <= count; i++) {
+      const fn = String(i).padStart(2, "0") + ext;
+      arr.push({
+        name: fn.replace(/\.[^.]+$/, ""),
+        artist: "",
+        url: new URL(fn, baseUrl).href,
+        cover: defaultCover
+      });
+    }
+    return arr;
+  }
+
+  // Load playlist or fallback
+  status("Looking for music/playlist.m3u…");
+  let text = await fetchText(new URL("playlist.m3u", MUSIC_DIR).href);
+  if (!text) {
+    status("Looking for music/playlist.m3u8…");
+    text = await fetchText(new URL("playlist.m3u8", MUSIC_DIR).href);
+  }
+
+  let tracks = [];
+  if (text) {
+    tracks = parseM3UWithCovers(text, MUSIC_DIR, DEFAULT_COVER);
+    if (!tracks.length) {
+      status("Playlist found but empty or malformed; using fallback 01..18.");
+      tracks = fallbackTracks();
+    } else {
+      status(`Loaded ${tracks.length} track(s) from playlist.`);
+    }
+  } else {
+    status("No playlist found; using fallback 01..18.");
+    tracks = fallbackTracks();
+  }
+
+  // Use first track’s cover for big header image, if available
+  if (tracks[0] && tracks[0].cover) {
+    document.getElementById('cover').style.backgroundImage = `url("${tracks[0].cover}")`;
+  }
+
+  // Initialize APlayer
+  const ap = new APlayer({
+    container: document.getElementById('aplayer'),
+    fixed: false,
+    autoplay: false,
+    theme: '#1db954',
+    loop: 'all',
+    order: 'list',
+    listFolded: false,
+    lrcType: 0,
+    audio: tracks.map(t => ({
+      name: t.name,     // title (you can include producer text here)
+      artist: t.artist, // "Boldy James & Lukah", etc.
+      url: t.url,
+      cover: t.cover
+    }))
+  });
+
+  status("Ready.");
+})();
+</script>
+</body>
+</html>
