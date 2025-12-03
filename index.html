@@ -66,6 +66,12 @@
     color: #444 !important;
   }
 
+  /* Playlist list height (make dropdown about twice as tall) */
+  .aplayer-list {
+    max-height: 480px !important;    /* increase this to taste */
+    overflow-y: auto !important;      /* ensure it scrolls */
+  }
+
   /* Progress bar + active row tint */
   .aplayer-bar .aplayer-played {
     background-color: #1db954 !important;
@@ -117,37 +123,38 @@
 
     /* Shrink all Now-Playing fonts */
     .now-title {
-      font-size: 7px !important;     /* 15px → ~1/3 */
+      font-size: 7px !important;
       display: block;
     }
     .now-artist {
-      font-size: 4.5px !important;   /* 14px → ~1/3 */
+      font-size: 4.5px !important;
       display: block;
       margin-left: 0;
       margin-top: 0px;
     }
     .now-producer {
-      font-size: 3.5px !important;   /* 11px → ~1/3 */
+      font-size: 3.5px !important;
       display: block;
       margin-left: 0;
       margin-top: 1px;
     }
   }
+
   .download-area {
-  text-align: center;
-  margin-top: 6px;
-}
+    text-align: center;
+    margin-top: 6px;
+  }
 
-.download-area a {
-  color: #1db954;
-  font-size: 10px;
-  font-weight: 600;
-  text-decoration: none;
-}
+  .download-area a {
+    color: #1db954;
+    font-size: 10px;
+    font-weight: 600;
+    text-decoration: none;
+  }
 
-.download-area a:hover {
-  text-decoration: none;
-}
+  .download-area a:hover {
+    text-decoration: none;
+  }
 </style>
 </head>
 <body>
@@ -308,8 +315,10 @@
 })();
 </script>
 
-  <div class="download-area">
-  <a href="https://drive.google.com/file/d/16IHcmIfUoLhjD5SmorRIhwuLtzD4OEoa/view?usp=sharing" download target="_blank" rel="noopener">DOWNLODAD THE SEAMLESSS MIX</a>
+<div class="download-area">
+  <a href="https://drive.google.com/file/d/16IHcmIfUoLhjD5SmorRIhwuLtzD4OEoa/view?usp=sharing" download target="_blank" rel="noopener">
+    DOWNLODAD THE SEAMLESSS MIX
+  </a>
 </div>
 </body>
 </html>
