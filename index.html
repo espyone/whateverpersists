@@ -269,7 +269,7 @@
   function formatDisplay(t) {
     const titleHTML  = `<span class="now-title">${t.title}</span>`;
     const artistHTML = t.artist   ? `<span class="now-artist">${t.artist}</span>` : "";
-    const prodHTML   = t.producer ? `<span class="now-producer">(${t.producer})</span>` : "";
+    const prodHTML   = t.producer ? `<span class="now-producer">${t.producer}</span>` : "";
     return `${titleHTML} ${artistHTML} ${prodHTML}`;
   }
 
