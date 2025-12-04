@@ -3,46 +3,55 @@
 <head>
   <meta charset="UTF-8">
   <title>Whatever Persists Dec 2025 Mix</title>
-  <!-- Important for mobile size / zoom -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <!-- IMPORTANT: makes layout match device width so 90vw is actually big -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
 
 <style>
   body {
     background:#4e664b;
     color:#fff;
-    font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
+    font-family:sans-serif;
     margin:0;
   }
 
-  .wrap {
-    width:min(540px, 96vw);
-    background:#12122e;
-    padding:10px 12px 22px;   /* smaller bottom padding */
-    border-radius:18px;
-    border:3px solid #f22;
-    position:relative;
+  /* centers player on all screens */
+  .outer {
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:12px;           /* keeps borders away from screen edge */
     box-sizing:border-box;
+    overflow-x:hidden;
+  }
+
+  /* DESKTOP / DEFAULT */
+  .wrap {
+    width:min(500px, 92vw); /* desktop behavior: ~500px max, centered */
+    background:#12122e;
+    padding:6px;
+    border-radius:14px;
+    border:3px solid #f22;
+    position:relative;      /* enable absolute positioning inside */
   }
 
   /* layout: cover + text */
   .now-wrap {
     display:flex;
-    gap:14px;
-    margin-bottom:6px;
+    gap:12px;
+    margin-bottom:8px;
     align-items:flex-start;
   }
 
   .cover-wrap {
     position: relative;
-    width: 130px;
-    height: 130px;
-    max-width: 42vw;
-    max-height: 42vw;
+    width: 120px;
+    height: 120px;
+    max-width: 40vw;
+    max-height: 40vw;
     cursor: pointer;
   }
 
@@ -50,7 +59,7 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    border-radius:10px;
+    border-radius:8px;
     display:block;
   }
 
@@ -64,8 +73,8 @@
   }
 
   .play-button {
-    width:52px;
-    height:52px;
+    width:48px;
+    height:48px;
     border-radius:50%;
     background:rgba(0,0,0,0.55);
     display:flex;
@@ -74,15 +83,15 @@
   }
 
   .play-button svg {
-    width:30px;
-    height:30px;
+    width:28px;
+    height:28px;
     fill:#fff;
   }
 
   .now-title {
     display:block;
-    line-height:1.6;
-    font-size:28px;
+    line-height:1.75;
+    font-size:29px;
     font-weight:700;
     color:#fff;
   }
@@ -90,32 +99,30 @@
   .now-artist {
     display:block;
     text-transform:uppercase;
-    font-size:18px;
+    font-size:19.5px;
     color:salmon;
     margin-top:2px;
   }
 
   .now-producer {
     display:block;
-    font-size:14px;
+    font-size:14.5px;
     color:#4FA3FF;
-    margin-top:4px;
+    margin-top:2px;
   }
 
-  /* APlayer trim-down + tighten vertical space */
+  /* APlayer trim-down */
   .aplayer {
     background:transparent !important;
     border:none !important;
     box-shadow:none !important;
-    padding:0 !important;
-    margin:0 !important;
   }
 
   .aplayer-pic { display:none !important; }
 
   .aplayer-info {
     margin-left:0 !important;
-    padding:4px 0 4px 0 !important;  /* less padding below bar */
+    padding-left:0 !important;
   }
 
   .aplayer-music { display:none !important; }
@@ -125,15 +132,15 @@
   /* 10s skip controls under player bar */
   .skipbar {
     display:flex;
-    justify-content:center;
-    gap:26px;
-    margin-top:4px;    /* closer to bar */
-    margin-bottom:0;
+    justify-content:left;
+    gap:30px;
+    margin-top:10px;   /* positive so it DOES NOT overlap progress bar */
+    margin-bottom:4px;
   }
 
   .skip-btn-circle {
-    width:34px;
-    height:34px;
+    width:35px;
+    height:35px;
     border-radius:50%;
     border:1px solid #444;
     background:#1a1a1a;
@@ -145,8 +152,8 @@
   }
 
   .skip-btn-circle svg {
-    width:20px;
-    height:20px;
+    width:22px;
+    height:22px;
     fill:#fff;
   }
 
@@ -158,73 +165,39 @@
     transform:scale(0.94);
   }
 
-  /* ---------- MOBILE: full-width, big enough but not tall ---------- */
-  @media (max-width: 600px) {
-    body {
-      align-items:flex-start;
+  /* MOBILE: ~90% screen width, bigger but same proportions, desktop unchanged */
+  @media (max-width:600px) {
+
+    .outer {
+      padding:16px;
     }
 
     .wrap {
-      width:100vw;
-      border-radius:0;
-      border-width:0;
-      padding:16px 14px 20px;  /* smaller bottom pad on mobile too */
+      width:90vw;          /* fills ~90% of screen width */
+      padding:10px;
+      border-radius:14px;
     }
 
-    .now-wrap {
-      gap:14px;
-      align-items:center;
-    }
-
+    .now-wrap { gap:10px; }
     .cover-wrap {
-      width:135px;
-      height:135px;
-      max-width:46vw;
-      max-height:46vw;
+      width:110px;
+      height:110px;
+      max-width:38vw;
+      max-height:38vw;
     }
 
-    .play-button {
-      width:56px;
-      height:56px;
-    }
-
-    .play-button svg {
-      width:32px;
-      height:32px;
-    }
-
-    .now-title {
-      font-size:22px;
-      line-height:1.35;
-    }
-
-    .now-artist {
-      font-size:15px;
-      margin-top:4px;
-    }
-
-    .now-producer {
-      font-size:13px;
-      margin-top:4px;
-    }
-
-    .skipbar {
-      margin-top:4px;
-      gap:32px;
-    }
+    .now-title { font-size:24px; }
+    .now-artist { font-size:16px; }
+    .now-producer { font-size:13px; }
 
     .skip-btn-circle {
-      width:40px;
-      height:40px;
+      width:34px;
+      height:34px;
     }
 
     .skip-btn-circle svg {
-      width:22px;
-      height:22px;
-    }
-
-    .download-area a {
-      font-size:12px;
+      width:18px;
+      height:18px;
     }
   }
 
@@ -252,6 +225,7 @@
 </head>
 
 <body>
+<div class="outer">
 <div class="wrap">
   
   <!-- COVER + NOW PLAYING TEXT -->
@@ -308,6 +282,7 @@
   </div>
 
 </div> <!-- end wrap -->
+</div> <!-- end outer -->
 
 <script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
 
