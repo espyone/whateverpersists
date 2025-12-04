@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Whatever Persists Dec 2025 Mix</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
+
+<style>
+  body {
+    background:#4e664b;
+    color:#fff;
+    font-family:sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    margin:0;
+  }
+
+  .wrap {
+    width:min(500px, 92vw);
+    background:#12122e;
+    padding:6px;
+    border-radius:14px;
+    border:3px solid #f22;
+  }
+
+  /* layout: cover + text */
+  .now-wrap {
+    display:flex;
+    gap:12px;
+    margin-bottom:4px;
+    align-items:flex-start;
+  }
+
+  .cover-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    max-width: 40vw;
+    max-height: 40vw;
+    cursor: pointer; /* whole image is clickable */
+  }
+
+  .np-cover {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:8px;
+    display:block;
+  }
+
+  /* Play/pause overlay centered on art */
+  .play-overlay {
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    /* always visible, works on mobile */
+    pointer-events:none; /* clicks go to cover-wrap */
+  }
+
+  .play-button {
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:rgba(0,0,0,0.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .play-button svg {
+    width:28px;
+    height:28px;
+    fill:#fff;
+  }
+
+  .now-title {
+    display:block;
+	line-height:1.75;
+    font-size:29px;
+    font-weight:700;
+    color:#fff;
+  }
+
+  .now-artist {
+    display:block;
+	text-transform:uppercase;
+    font-size:19.5px;
+    color:salmon;
+    margin-top:2px;
+  }
+
+  .now-producer {
+    display:block;
+    font-size:14.5px;
+    color:#4FA3FF;
+    margin-top:2px;
+  }
+
+  /* APlayer trim-down: controls only */
+  .aplayer {
+    background:transparent !important;
+    border:none !important;
+    box-shadow:none !important;
+  }
+
+  /* hide APlayer's own cover box */
+  .aplayer-pic {
+    display:none !important;
+  }
+
+  /* pull info area left since pic is gone */
+  .aplayer-info {
+    margin-left:0 !important;
+    padding-left:0 !important;
+  }
+
+  /* hide built-in title/artist line ("name - artist") */
+  .aplayer-music {
+    display:none !important;
+  }
+
+  /* hide playlist + menu toggle */
+  .aplayer-list {
+    display:none !important;
+  }
+  .aplayer-icon-menu {
+    display:none !important;
+  }
+
+  @media (max-width:600px) {
+    .wrap {
+      width:100vw;
+      border-radius:0;
+      padding:14px;
+    }
+    .now-wrap {
+      gap:10px;
+    }
+    .cover-wrap {
+      width:90px;
+      height:90px;
+      max-width:35vw;
+      max-height:35vw;
+    }
+    .now-title {
+      font-size:16px;
+    }
+    .now-artist {
+      font-size:13px;
+    }
+    .now-producer {
+      font-size:11px;
+    }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  
+  <!-- COVER + NOW PLAYING TEXT -->
+  <div class="now-wrap">
+    <div class="cover-wrap" id="cover-wrap">
+      <img id="np-cover" class="np-cover" src="https://whateverpersists.com/music/201.jpg" alt="">
+      <!-- overlay controls -->
+      <div class="play-overlay">
+        <div class="play-button">
+          <!-- play icon (triangle) -->
+          <svg id="play-icon" viewBox="0 0 64 64">
+            <polygon points="20,12 52,32 20,52"></polygon>
+          </svg>
+          <!-- pause icon (two bars) -->
+          <svg id="pause-icon" viewBox="0 0 64 64" style="display:none;">
+            <rect x="18" y="12" width="10" height="40"></rect>
+            <rect x="36" y="12" width="10" height="40"></rect>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div id="np">
+      <span id="np-title" class="now-title">Loading…</span>
+      <span id="np-artist" class="now-artist"></span>
+      <span id="np-producer" class="now-producer"></span>
+    </div>
+  </div>
+
+  <!-- APlayer (controls only) -->
+  <div id="player"></div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js"></script>
+
+<script>
+/* -------------------------------
+   1. CHAPTER DATA
+   -------------------------------- */
+const chapters = [
+  { start: 0,        title: "3AM In New Orleans",       artist: "A$AP Ant & Curren$y",                    producer: "Lord Fubu",                      cover: "https://whateverpersists.com/music/201.jpg" },
+  { start: 100.5,    title: "Chef Dreds",               artist: "Griselda",                              producer: "Daringer, Beat Butcha",          cover: "https://whateverpersists.com/music/202.jpg" },
+  { start: 245.5,    title: "Street Shit",              artist: "Boldy James",                           producer: "Real Bad Man",                   cover: "https://whateverpersists.com/music/203.jpg" },
+  { start: 406,      title: "Cory N' Mel",              artist: "GRIP & Tate228",                        producer: "Tedd Boyd",                      cover: "https://whateverpersists.com/music/204.jpg" },
+  { start: 589,      title: "Lay Wit Ya",               artist: "Isaiah Rashad & Duke Deuce",           producer: "Hollywood Cole",                 cover: "https://whateverpersists.com/music/205.jpg" },
+  { start: 746.221,  title: "Jus Lef Phoenix",          artist: "A$AP Twelvyy",                          producer: null,                             cover: "https://whateverpersists.com/music/206.jpg" },
+  { start: 838.666,  title: "Stigmata",                 artist: "Boldy James & Lukah",                   producer: "Walz",                           cover: "https://whateverpersists.com/music/01.jpg" },
+  { start: 988.712,  title: "Steppin' On Niggas",       artist: "21 Savage",                             producer: "Metro Boomin",                   cover: "https://whateverpersists.com/music/02.jpg" },
+  { start: 1128.205, title: "Fake Names",               artist: "Freddie Gibbs",                         producer: "Madlib",                         cover: "https://whateverpersists.com/music/03.jpg" },
+  { start: 1320.208, title: "Blessings",                artist: "Cousin Stizz",                          producer: "Tee-WaTT, Mali",                 cover: "https://whateverpersists.com/music/04.jpg" },
+  { start: 1458.912, title: "Black Flag Freestyle",     artist: "Denzel Curry & That Mexican OT",        producer: "187Ricky, Payday",               cover: "https://whateverpersists.com/music/05.jpg" },
+  { start: 1629.699, title: "Cash In Cash Out",         artist: "21 Savage & Tyler The Creator",         producer: "Pharrell Williams",              cover: "https://whateverpersists.com/music/402.jpg" },
+  { start: 1837.902, title: "4 Da Gang",                artist: "42 Dugg & Roddy Ricch",                 producer: "TayTayMadeIt",                   cover: "https://whateverpersists.com/music/06.jpg" },
+  { start: 1975.854, title: "Complications",            artist: "Aesop Rock & billy woods",              producer: "August Fanon",                   cover: "https://whateverpersists.com/music/07.jpg" },
+  { start: 2167.932, title: "American Muscle",          artist: "Thouxanbanfauni",                       producer: "Scott Slatt",                    cover: "https://whateverpersists.com/music/08.jpg" },
+  { start: 2322.359, title: "80 Bills",                 artist: "Benny The Butcher & Elcamino",          producer: "OptiVision",                     cover: "https://whateverpersists.com/music/09.jpg" },
+  { start: 2474.338, title: "Jumpin In",                artist: "Kenny Mason",                           producer: "Coupe, Mike Bozzi",              cover: "https://whateverpersists.com/music/10.jpg" },
+  { start: 2625.256, title: "Satellite",                artist: "The Musalini",                          producer: "38 Spesh",                       cover: "https://whateverpersists.com/music/11.jpg" },
+  { start: 2739.715, title: "The Gods Must Be Crazy",   artist: "Armand Hammer",                         producer: "El-P",                           cover: "https://whateverpersists.com/music/12.jpg" },
+  { start: 2920.363, title: "What You Hear Pt. 2",      artist: "Bigwalkdog",                            producer: "Scotty Brook, PabloMCR",         cover: "https://whateverpersists.com/music/13.jpg" },
+  { start: 3124.274, title: "Recidivism",               artist: "Archibald Slim",                        producer: "Willie",                         cover: "https://whateverpersists.com/music/14.jpg" },
+  { start: 3245.991, title: "Cold Hearted",             artist: "Jay Fizzle",                            producer: "Cash Clay",                      cover: "https://whateverpersists.com/music/15.jpg" },
+  { start: 3453.564, title: "Johnny P's Caddy",         artist: "Benny The Butcher & J. Cole",           producer: "Alchemist",                      cover: "https://whateverpersists.com/music/16.jpg" },
+  { start: 3669.653, title: "Dropout",                  artist: "Maxo Kream & OMB Bloodbath",            producer: "KODIE",                          cover: "https://whateverpersists.com/music/17.jpg" },
+  { start: 3835.687, title: "Combination",              artist: "Curren$y",                              producer: "Kino Beats, Hay Markino",        cover: "https://whateverpersists.com/music/302.jpg" },
+  { start: 3955.136, title: "Nothing Is Safe",          artist: "clipping.",                             producer: "clipping.",                             cover: "https://whateverpersists.com/music/18.jpg" }
+];
+
+const DEFAULT_COVER = chapters[0].cover || "https://whateverpersists.com/music/201.jpg";
+
+/* -------------------------------
+   2. APLAYER INSTANCE
+   -------------------------------- */
+const ap = new APlayer({
+    container: document.getElementById('player'),
+    audio: [{
+        name: "1-Hour Mix",
+        artist: "",
+        url: "https://whateverpersists.com/music/wp_dec2025_mix_low_vbr.mp3",
+        cover: DEFAULT_COVER
+    }],
+    listFolded: true,
+    listMaxHeight: 0
+});
+
+/* Cache DOM refs */
+const npCover    = document.getElementById("np-cover");
+const npTitle    = document.getElementById("np-title");
+const npArtist   = document.getElementById("np-artist");
+const npProducer = document.getElementById("np-producer");
+
+const coverWrap  = document.getElementById("cover-wrap");
+const playIcon   = document.getElementById("play-icon");
+const pauseIcon  = document.getElementById("pause-icon");
+
+let currentIndex = 0;
+
+/* -------------------------------
+   3. NOW PLAYING UPDATE FUNCTION
+   -------------------------------- */
+function updateNowPlaying(index) {
+    const ch = chapters[index];
+    if (!ch) return;
+
+    npTitle.textContent    = ch.title;
+    npArtist.textContent   = ch.artist || "";
+    npProducer.textContent = ch.producer ? `${ch.producer}` : "";
+
+    if (npCover) {
+      npCover.src = ch.cover || DEFAULT_COVER;
+    }
+
+    // also update APlayer's own thumbnail if any remnants show up
+    const apPic = document.querySelector(".aplayer-pic img");
+    if (apPic && ch.cover) {
+      apPic.src = ch.cover;
+    }
+}
+
+/* -------------------------------
+   4. PLAY/PAUSE ICON SYNC
+   -------------------------------- */
+function updateOverlayIcon() {
+  if (ap.audio.paused) {
+    playIcon.style.display  = "block";
+    pauseIcon.style.display = "none";
+  } else {
+    playIcon.style.display  = "none";
+    pauseIcon.style.display = "block";
+  }
+}
+
+// click anywhere on the cover to toggle play/pause
+coverWrap.addEventListener("click", () => {
+  if (ap.audio.paused) ap.play();
+  else ap.pause();
+  updateOverlayIcon();
+});
+
+ap.on("play",  updateOverlayIcon);
+ap.on("pause", updateOverlayIcon);
+
+/* Set first chapter + initial icon */
+updateNowPlaying(0);
+updateOverlayIcon();
+
+/* -------------------------------
+   5. TIME-BASED CHAPTER SWITCHING
+   -------------------------------- */
+ap.audio.addEventListener("timeupdate", () => {
+    const t = ap.audio.currentTime;
+
+    for (let i = chapters.length - 1; i >= 0; i--) {
+        if (t >= chapters[i].start) {
+            if (currentIndex !== i) {
+                currentIndex = i;
+                updateNowPlaying(i);
+            }
+            break;
+        }
+    }
+});
+</script>
+
+</body>
+</html>
