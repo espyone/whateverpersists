@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>Whatever Persists Dec 2025 Mix</title>
+  <!-- Important for mobile size / zoom -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css">
 
 <style>
   body {
     background:#4e664b;
     color:#fff;
-    font-family:sans-serif;
+    font-family:-apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -18,28 +20,29 @@
   }
 
   .wrap {
-    width:min(500px, 92vw);
+    width:min(540px, 96vw);
     background:#12122e;
-    padding:6px;
-    border-radius:14px;
+    padding:10px 12px 22px;   /* smaller bottom padding */
+    border-radius:18px;
     border:3px solid #f22;
-    position:relative; /* enable absolute positioning inside */
+    position:relative;
+    box-sizing:border-box;
   }
 
   /* layout: cover + text */
   .now-wrap {
     display:flex;
-    gap:12px;
-    margin-bottom:4px;
+    gap:14px;
+    margin-bottom:6px;
     align-items:flex-start;
   }
 
   .cover-wrap {
     position: relative;
-    width: 120px;
-    height: 120px;
-    max-width: 40vw;
-    max-height: 40vw;
+    width: 130px;
+    height: 130px;
+    max-width: 42vw;
+    max-height: 42vw;
     cursor: pointer;
   }
 
@@ -47,7 +50,7 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    border-radius:8px;
+    border-radius:10px;
     display:block;
   }
 
@@ -61,8 +64,8 @@
   }
 
   .play-button {
-    width:48px;
-    height:48px;
+    width:52px;
+    height:52px;
     border-radius:50%;
     background:rgba(0,0,0,0.55);
     display:flex;
@@ -71,15 +74,15 @@
   }
 
   .play-button svg {
-    width:28px;
-    height:28px;
+    width:30px;
+    height:30px;
     fill:#fff;
   }
 
   .now-title {
     display:block;
-    line-height:1.75;
-    font-size:29px;
+    line-height:1.6;
+    font-size:28px;
     font-weight:700;
     color:#fff;
   }
@@ -87,52 +90,142 @@
   .now-artist {
     display:block;
     text-transform:uppercase;
-    font-size:19.5px;
+    font-size:18px;
     color:salmon;
     margin-top:2px;
   }
 
   .now-producer {
     display:block;
-    font-size:14.5px;
+    font-size:14px;
     color:#4FA3FF;
-    margin-top:2px;
+    margin-top:4px;
   }
 
-  /* APlayer trim-down */
+  /* APlayer trim-down + tighten vertical space */
   .aplayer {
     background:transparent !important;
     border:none !important;
     box-shadow:none !important;
+    padding:0 !important;
+    margin:0 !important;
   }
 
   .aplayer-pic { display:none !important; }
 
   .aplayer-info {
     margin-left:0 !important;
-    padding-left:0 !important;
+    padding:4px 0 4px 0 !important;  /* less padding below bar */
   }
 
   .aplayer-music { display:none !important; }
   .aplayer-list { display:none !important; }
   .aplayer-icon-menu { display:none !important; }
 
-  @media (max-width:600px) {
+  /* 10s skip controls under player bar */
+  .skipbar {
+    display:flex;
+    justify-content:center;
+    gap:26px;
+    margin-top:4px;    /* closer to bar */
+    margin-bottom:0;
+  }
+
+  .skip-btn-circle {
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:1px solid #444;
+    background:#1a1a1a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background 0.15s, transform 0.1s;
+  }
+
+  .skip-btn-circle svg {
+    width:20px;
+    height:20px;
+    fill:#fff;
+  }
+
+  .skip-btn-circle:hover {
+    background:#333;
+  }
+
+  .skip-btn-circle:active {
+    transform:scale(0.94);
+  }
+
+  /* ---------- MOBILE: full-width, big enough but not tall ---------- */
+  @media (max-width: 600px) {
+    body {
+      align-items:flex-start;
+    }
+
     .wrap {
       width:100vw;
       border-radius:0;
-      padding:14px;
+      border-width:0;
+      padding:16px 14px 20px;  /* smaller bottom pad on mobile too */
     }
-    .now-wrap { gap:10px; }
+
+    .now-wrap {
+      gap:14px;
+      align-items:center;
+    }
+
     .cover-wrap {
-      width:90px;
-      height:90px;
-      max-width:35vw;
-      max-height:35vw;
+      width:135px;
+      height:135px;
+      max-width:46vw;
+      max-height:46vw;
     }
-    .now-title { font-size:16px; }
-    .now-artist { font-size:13px; }
-    .now-producer { font-size:11px; }
+
+    .play-button {
+      width:56px;
+      height:56px;
+    }
+
+    .play-button svg {
+      width:32px;
+      height:32px;
+    }
+
+    .now-title {
+      font-size:22px;
+      line-height:1.35;
+    }
+
+    .now-artist {
+      font-size:15px;
+      margin-top:4px;
+    }
+
+    .now-producer {
+      font-size:13px;
+      margin-top:4px;
+    }
+
+    .skipbar {
+      margin-top:4px;
+      gap:32px;
+    }
+
+    .skip-btn-circle {
+      width:40px;
+      height:40px;
+    }
+
+    .skip-btn-circle svg {
+      width:22px;
+      height:22px;
+    }
+
+    .download-area a {
+      font-size:12px;
+    }
   }
 
   /* DOWNLOAD BUTTON - bottom right inside wrap */
@@ -147,7 +240,7 @@
 
   .download-area a {
     color:#fff;
-    font-size:10px;
+    font-size:14px;
     font-weight:600;
     text-decoration:none;
   }
@@ -188,7 +281,25 @@
   <!-- APlayer controls -->
   <div id="player"></div>
 
-  <!-- DOWNLOAD LINK (now inside wrap + bottom-right) -->
+  <!-- 10s skip controls under the player bar -->
+  <div class="skipbar">
+    <button id="btn-rew" class="skip-btn-circle" aria-label="Rewind 10 seconds">
+      <svg viewBox="0 0 64 64">
+        <!-- double left arrows -->
+        <polygon points="34,12 18,32 34,52"></polygon>
+        <polygon points="50,12 34,32 50,52"></polygon>
+      </svg>
+    </button>
+    <button id="btn-fwd" class="skip-btn-circle" aria-label="Forward 10 seconds">
+      <svg viewBox="0 0 64 64">
+        <!-- double right arrows -->
+        <polygon points="30,12 46,32 30,52"></polygon>
+        <polygon points="14,12 30,32 14,52"></polygon>
+      </svg>
+    </button>
+  </div>
+
+  <!-- DOWNLOAD LINK (inside wrap, bottom-right) -->
   <div class="download-area">
     <a href="https://drive.google.com/file/d/16IHcmIfUoLhjD5SmorRIhwuLtzD4OEoa/view?usp=sharing"
        download target="_blank" rel="noopener">
@@ -202,35 +313,52 @@
 
 <script>
 /* -------------------------------
-   1. CHAPTER DATA
+   0. TIME STRING → SECONDS
+   -------------------------------- */
+function toSeconds(t) {
+  if (typeof t === "number") return t; // already seconds
+  const parts = t.split(":").map(Number);
+  if (parts.length === 2) {
+    const [m, s] = parts;
+    return m * 60 + s;
+  }
+  if (parts.length === 3) {
+    const [h, m, s] = parts;
+    return h * 3600 + m * 60 + s;
+  }
+  return 0;
+}
+
+/* -------------------------------
+   1. CHAPTER DATA (M:SS)
    -------------------------------- */
 const chapters = [
-  { start: 0,        title: "3AM In New Orleans",       artist: "A$AP Ant & Curren$y", producer: "Lord Fubu", cover: "https://whateverpersists.com/music/201.jpg" },
-  { start: 100.5,    title: "Chef Dreds",               artist: "Griselda",            producer: "Daringer, Beat Butcha", cover: "https://whateverpersists.com/music/202.jpg" },
-  { start: 245.5,    title: "Street Shit",              artist: "Boldy James",         producer: "Real Bad Man", cover: "https://whateverpersists.com/music/203.jpg" },
-  { start: 406,      title: "Cory N' Mel",              artist: "GRIP & Tate228",      producer: "Tedd Boyd", cover: "https://whateverpersists.com/music/204.jpg" },
-  { start: 589,      title: "Lay Wit Ya",               artist: "Isaiah Rashad & Duke Deuce", producer: "Hollywood Cole", cover: "https://whateverpersists.com/music/205.jpg" },
-  { start: 746.221,  title: "Jus Lef Phoenix",          artist: "A$AP Twelvyy",        producer: null, cover: "https://whateverpersists.com/music/206.jpg" },
-  { start: 833,  title: "Stigmata",                 artist: "Boldy James & Lukah", producer: "Walz", cover: "https://whateverpersists.com/music/01.jpg" },
-  { start: 1001.712,  title: "Steppin' On Niggas",       artist: "21 Savage",           producer: "Metro Boomin", cover: "https://whateverpersists.com/music/02.jpg" },
-  { start: 1128.205, title: "Fake Names",               artist: "Freddie Gibbs",       producer: "Madlib", cover: "https://whateverpersists.com/music/03.jpg" },
-  { start: 1327.208, title: "Blessings",                artist: "Cousin Stizz",        producer: "Tee-WaTT, Mali", cover: "https://whateverpersists.com/music/04.jpg" },
-  { start: 1471.912, title: "Black Flag Freestyle",     artist: "Denzel Curry & That Mexican OT", producer: "187Ricky, Payday", cover: "https://whateverpersists.com/music/05.jpg" },
-  { start: 1640.799, title: "Cash In Cash Out",         artist: "21 Savage & Tyler The Creator", producer: "Pharrell Williams", cover: "https://whateverpersists.com/music/402.jpg" },
-  { start: 1821.702, title: "4 Da Gang",                artist: "42 Dugg & Roddy Ricch", producer: "TayTayMadeIt", cover: "https://whateverpersists.com/music/06.jpg" },
-  { start: 1980.854, title: "Complications",            artist: "Aesop Rock & billy woods", producer: "August Fanon", cover: "https://whateverpersists.com/music/07.jpg" },
-  { start: 2179.932, title: "American Muscle",          artist: "Thouxanbanfauni",      producer: "Scott Slatt", cover: "https://whateverpersists.com/music/08.jpg" },
-  { start: 2326.659, title: "80 Bills",                 artist: "Benny The Butcher & Elcamino", producer: "OptiVision", cover: "https://whateverpersists.com/music/09.jpg" },
-  { start: 2460.438, title: "Jumpin In",                artist: "Kenny Mason",          producer: "Coupe, Mike Bozzi", cover: "https://whateverpersists.com/music/10.jpg" },
-  { start: 2630.156, title: "Satellite",                artist: "The Musalini",         producer: "38 Spesh", cover: "https://whateverpersists.com/music/11.jpg" },
-  { start: 2741.715, title: "The Gods Must Be Crazy",   artist: "Armand Hammer",        producer: "El-P", cover: "https://whateverpersists.com/music/12.jpg" },
-  { start: 2929.363, title: "What You Hear Pt. 2",      artist: "Bigwalkdog",           producer: "Scotty Brook, PabloMCR", cover: "https://whateverpersists.com/music/13.jpg" },
-  { start: 3117.274, title: "Recidivism",               artist: "Archibald Slim",       producer: "Willie", cover: "https://whateverpersists.com/music/14.jpg" },
-  { start: 3257.991, title: "Cold Hearted",             artist: "Jay Fizzle",           producer: "Cash Clay", cover: "https://whateverpersists.com/music/15.jpg" },
-  { start: 3467.564, title: "Johnny P's Caddy",         artist: "Benny The Butcher & J. Cole", producer: "Alchemist", cover: "https://whateverpersists.com/music/16.jpg" },
-  { start: 3668.653, title: "Dropout",                  artist: "Maxo Kream & OMB Bloodbath", producer: "KODIE", cover: "https://whateverpersists.com/music/17.jpg" },
-  { start: 3842.687, title: "Combination",              artist: "Curren$y",             producer: "Kino Beats, Hay Markino", cover: "https://whateverpersists.com/music/302.jpg" },
-  { start: 3970.536, title: "Nothing Is Safe",          artist: "clipping.",            producer: "clipping.", cover: "https://whateverpersists.com/music/18.jpg" }
+  { start: "0:00",   title: "3AM In New Orleans",       artist: "A$AP Ant & Curren$y", producer: "Lord Fubu",                      cover: "https://whateverpersists.com/music/201.jpg" },
+  { start: "1:40",   title: "Chef Dreds",               artist: "Griselda",            producer: "Daringer, Beat Butcha",          cover: "https://whateverpersists.com/music/202.jpg" },
+  { start: "4:06",   title: "Street Shit",              artist: "Boldy James",         producer: "Real Bad Man",                   cover: "https://whateverpersists.com/music/203.jpg" },
+  { start: "6:46",   title: "Cory N' Mel",              artist: "GRIP & Tate228",      producer: "Tedd Boyd",                      cover: "https://whateverpersists.com/music/204.jpg" },
+  { start: "9:49",   title: "Lay Wit Ya",               artist: "Isaiah Rashad & Duke Deuce", producer: "Hollywood Cole",         cover: "https://whateverpersists.com/music/205.jpg" },
+  { start: "12:26",  title: "Jus Lef Phoenix",          artist: "A$AP Twelvyy",        producer: null,                             cover: "https://whateverpersists.com/music/206.jpg" },
+  { start: "13:58",  title: "Stigmata",                 artist: "Boldy James & Lukah", producer: "Walz",                           cover: "https://whateverpersists.com/music/01.jpg" },
+  { start: "16:28",  title: "Steppin' On Niggas",       artist: "21 Savage",           producer: "Metro Boomin",                   cover: "https://whateverpersists.com/music/02.jpg" },
+  { start: "18:48",  title: "Fake Names",               artist: "Freddie Gibbs",       producer: "Madlib",                         cover: "https://whateverpersists.com/music/03.jpg" },
+  { start: "22:00",  title: "Blessings",                artist: "Cousin Stizz",        producer: "Tee-WaTT, Mali",                 cover: "https://whateverpersists.com/music/04.jpg" },
+  { start: "24:18",  title: "Black Flag Freestyle",     artist: "Denzel Curry & That Mexican OT", producer: "187Ricky, Payday",   cover: "https://whateverpersists.com/music/05.jpg" },
+  { start: "27:10",  title: "Cash In Cash Out",         artist: "21 Savage & Tyler The Creator", producer: "Pharrell Williams",   cover: "https://whateverpersists.com/music/402.jpg" },
+  { start: "30:22",  title: "4 Da Gang",                artist: "42 Dugg & Roddy Ricch", producer: "TayTayMadeIt",                 cover: "https://whateverpersists.com/music/06.jpg" },
+  { start: "32:56",  title: "Complications",            artist: "Aesop Rock & billy woods", producer: "August Fanon",             cover: "https://whateverpersists.com/music/07.jpg" },
+  { start: "36:07",  title: "American Muscle",          artist: "Thouxanbanfauni",      producer: "Scott Slatt",                    cover: "https://whateverpersists.com/music/08.jpg" },
+  { start: "38:42",  title: "80 Bills",                 artist: "Benny The Butcher & Elcamino", producer: "OptiVision",           cover: "https://whateverpersists.com/music/09.jpg" },
+  { start: "41:02",  title: "Jumpin In",                artist: "Kenny Mason",          producer: "Coupe, Mike Bozzi",              cover: "https://whateverpersists.com/music/10.jpg" },
+  { start: "43:45",  title: "Satellite",                artist: "The Musalini",         producer: "38 Spesh",                       cover: "https://whateverpersists.com/music/11.jpg" },
+  { start: "45:39",  title: "The Gods Must Be Crazy",   artist: "Armand Hammer",        producer: "El-P",                           cover: "https://whateverpersists.com/music/12.jpg" },
+  { start: "48:40",  title: "What You Hear Pt. 2",      artist: "Bigwalkdog",           producer: "Scotty Brook, PabloMCR",         cover: "https://whateverpersists.com/music/13.jpg" },
+  { start: "52:04",  title: "Recidivism",               artist: "Archibald Slim",       producer: "Willie",                         cover: "https://whateverpersists.com/music/14.jpg" },
+  { start: "54:05",  title: "Cold Hearted",             artist: "Jay Fizzle",           producer: "Cash Clay",                      cover: "https://whateverpersists.com/music/15.jpg" },
+  { start: "57:33",  title: "Johnny P's Caddy",         artist: "Benny The Butcher & J. Cole", producer: "Alchemist",              cover: "https://whateverpersists.com/music/16.jpg" },
+  { start: "61:09",  title: "Dropout",                  artist: "Maxo Kream & OMB Bloodbath", producer: "KODIE",                    cover: "https://whateverpersists.com/music/17.jpg" },
+  { start: "63:55",  title: "Combination",              artist: "Curren$y",             producer: "Kino Beats, Hay Markino",        cover: "https://whateverpersists.com/music/302.jpg" },
+  { start: "65:55",  title: "Nothing Is Safe",          artist: "clipping.",            producer: "clipping.",                      cover: "https://whateverpersists.com/music/18.jpg" }
 ];
 
 const DEFAULT_COVER = chapters[0].cover;
@@ -243,7 +371,7 @@ const ap = new APlayer({
     audio: [{
         name: "1-Hour Mix",
         artist: "",
-        url: "https://whateverpersists.com/music/wp_dec2025_mix_low_vbr.mp3",
+        url: "https://whateverpersists.com/music/wp_dec2025_mix_ogg.ogg",
         cover: DEFAULT_COVER
     }],
     listFolded: true,
@@ -259,6 +387,9 @@ const npProducer = document.getElementById("np-producer");
 const coverWrap  = document.getElementById("cover-wrap");
 const playIcon   = document.getElementById("play-icon");
 const pauseIcon  = document.getElementById("pause-icon");
+
+const btnRew     = document.getElementById("btn-rew");
+const btnFwd     = document.getElementById("btn-fwd");
 
 let currentIndex = 0;
 
@@ -303,17 +434,32 @@ coverWrap.addEventListener("click", () => {
 ap.on("play",  updateOverlayIcon);
 ap.on("pause", updateOverlayIcon);
 
+/* -------------------------------
+   5. 10-SECOND SKIP BUTTONS
+   -------------------------------- */
+if (btnRew) {
+  btnRew.addEventListener("click", () => {
+    ap.audio.currentTime = Math.max(0, ap.audio.currentTime - 10);
+  });
+}
+if (btnFwd) {
+  btnFwd.addEventListener("click", () => {
+    ap.audio.currentTime = Math.min(ap.audio.duration || ap.audio.currentTime + 10,
+                                    ap.audio.currentTime + 10);
+  });
+}
+
 updateNowPlaying(0);
 updateOverlayIcon();
 
 /* -------------------------------
-   5. TIME-BASED CHAPTER SWITCHING
+   6. TIME-BASED CHAPTER SWITCHING
    -------------------------------- */
 ap.audio.addEventListener("timeupdate", () => {
     const t = ap.audio.currentTime;
 
     for (let i = chapters.length - 1; i >= 0; i--) {
-        if (t >= chapters[i].start) {
+        if (t >= toSeconds(chapters[i].start)) {
             if (currentIndex !== i) {
                 currentIndex = i;
                 updateNowPlaying(i);
